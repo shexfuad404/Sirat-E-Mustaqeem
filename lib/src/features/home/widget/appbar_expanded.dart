@@ -17,7 +17,7 @@ class AppBarExpanded extends StatelessWidget {
     return Container(
       width: 1.sw,
       height: 0.3.sh,
-      color: Theme.of(context).cardColor,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: Stack(
         children: [
           BlocBuilder<ThemeBloc, ThemeState>(

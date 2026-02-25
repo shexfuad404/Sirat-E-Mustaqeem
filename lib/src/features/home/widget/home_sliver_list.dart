@@ -14,9 +14,7 @@ class HomeSliverList extends StatelessWidget {
       delegate: SliverChildListDelegate(
         [
           CollectionCard(),
-          SizedBox(height: 16.h),
           AyatCard(),
-          SizedBox(height: 16.h),
           HadessCard(),
           SizedBox(height: 112.h),
         ],

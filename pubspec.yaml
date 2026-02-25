@@ -72,3 +72,7 @@ flutter:
     - family: Jameel
       fonts:
         - asset: assets/fonts/jameel.ttf
+
+    - family: "arsura"
+      fonts:
+        - asset: assets/fonts/arsura.ttf

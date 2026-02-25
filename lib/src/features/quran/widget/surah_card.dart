@@ -36,15 +36,23 @@ class SurahCard extends StatelessWidget {
         padding: EdgeInsets.only(
           left: 16.w,
         ),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Theme.of(context).colorScheme.surface,
+              width: 1.sp,
+            ),
+          ),
+        ),
         child: Row(
           children: [
             Container(
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
-                  borderRadius: kCardBorderRadius,
+                  borderRadius: kAppIconBorderRadius,
                 ),
-                color: Theme.of(context).primaryColor.withOpacity(
-                      0.2,
+                color: Theme.of(context).primaryColor.withValues(
+                      alpha: 0.2,
                     ),
               ),
               width: 48.w,
@@ -55,6 +63,7 @@ class SurahCard extends StatelessWidget {
                   '${index + 1}',
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
                       ),
                 ),
               ),
@@ -63,17 +72,9 @@ class SurahCard extends StatelessWidget {
               width: 16.w,
             ),
             Expanded(
-              child: Container(
+              child: Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: 16.h,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).colorScheme.surface,
-                      width: 2.sp,
-                    ),
-                  ),
+                  vertical: 12.h,
                 ),
                 child: Row(
                   children: [
@@ -101,9 +102,10 @@ class SurahCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      surahs.surahs[index].nameAr,
+                      '${index + 1}',
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            fontFamily: 'Uthman',
+                            fontFamily: 'arsura',
+                            fontSize: 30.sp,
                           ),
                     ),
                     SizedBox(

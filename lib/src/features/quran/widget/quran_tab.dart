@@ -16,98 +16,92 @@ class QuranTab extends StatelessWidget {
           width: double.infinity,
           margin: kPagePadding,
           decoration: BoxDecoration(
-            borderRadius: kCardBorderRadius,
+            borderRadius: kAppIconBorderRadius,
             color: Theme.of(context).colorScheme.surface,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              GestureDetector(
-                onTap: () {
-                  if (!state.firstTab) {
-                    BlocProvider.of<TabBloc>(context)
-                        .state
-                        .controller
-                        .animateToPage(
-                          0,
-                          duration: kAnimationDuration,
-                          curve: kAnimationCurve,
-                        );
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    if (!state.firstTab) {
+                      BlocProvider.of<TabBloc>(context)
+                          .state
+                          .controller
+                          .animateToPage(
+                            0,
+                            duration: kAnimationDuration,
+                            curve: kAnimationCurve,
+                          );
 
-                    BlocProvider.of<TabBloc>(context).add(ToggleTab(false));
-                  }
-                },
-                child: AnimatedContainer(
-                  duration: kAnimationDuration,
-                  curve: kAnimationCurve,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 12.h,
-                  ),
-                  decoration: BoxDecoration(
-                    border: state.firstTab
-                        ? Border(
-                            bottom: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                              width: 2.sp,
+                      BlocProvider.of<TabBloc>(context).add(ToggleTab(false));
+                    }
+                  },
+                  child: AnimatedContainer(
+                    duration: kAnimationDuration,
+                    curve: kAnimationCurve,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 12.h,
+                    ),
+                    margin: EdgeInsets.all(5.w),
+                    decoration: BoxDecoration(
+                      color: state.firstTab
+                          ? Theme.of(context).primaryColor
+                          : Colors.transparent,
+                      borderRadius: kAppIconBorderRadius,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Surah',
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: state.firstTab ? Colors.white : null,
                             ),
-                          )
-                        : Border(
-                            bottom: BorderSide(
-                              color: Colors.transparent,
-                              width: 2.sp,
-                            ),
-                          ),
-                  ),
-                  child: Text(
-                    'Surah',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-              GestureDetector(
-                onTap: () {
-                  if (state.firstTab) {
-                    BlocProvider.of<TabBloc>(context)
-                        .state
-                        .controller
-                        .animateToPage(
-                          1,
-                          duration: kAnimationDuration,
-                          curve: kAnimationCurve,
-                        );
-                    BlocProvider.of<TabBloc>(context).add(ToggleTab(true));
-                  }
-                },
-                child: AnimatedContainer(
-                  duration: kAnimationDuration,
-                  curve: kAnimationCurve,
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 12.w,
-                    vertical: 12.h,
-                  ),
-                  decoration: BoxDecoration(
-                    border: !state.firstTab
-                        ? Border(
-                            bottom: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                              width: 2.sp,
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    if (state.firstTab) {
+                      BlocProvider.of<TabBloc>(context)
+                          .state
+                          .controller
+                          .animateToPage(
+                            1,
+                            duration: kAnimationDuration,
+                            curve: kAnimationCurve,
+                          );
+                      BlocProvider.of<TabBloc>(context).add(ToggleTab(true));
+                    }
+                  },
+                  child: AnimatedContainer(
+                    duration: kAnimationDuration,
+                    curve: kAnimationCurve,
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 12.w,
+                      vertical: 12.h,
+                    ),
+                    margin: EdgeInsets.all(5.w),
+                    decoration: BoxDecoration(
+                      color: !state.firstTab
+                          ? Theme.of(context).primaryColor
+                          : Colors.transparent,
+                      borderRadius: kAppIconBorderRadius,
+                    ),
+                    child: Center(
+                      child: Text(
+                        'Juz',
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: !state.firstTab ? Colors.white : null,
                             ),
-                          )
-                        : Border(
-                            bottom: BorderSide(
-                              color: Colors.transparent,
-                              width: 2.sp,
-                            ),
-                          ),
-                  ),
-                  child: Text(
-                    'Juz',
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      ),
+                    ),
                   ),
                 ),
               ),

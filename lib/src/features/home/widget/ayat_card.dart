@@ -21,9 +21,6 @@ class AyatCard extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
           ),
-          // Divider(
-          //   height: 32.h,
-          // ),
           SizedBox(
             height: 16.h,
           ),

@@ -6,7 +6,7 @@ import '../../utils/coming_soon_dialog.dart';
 import '../model/collection.dart';
 
 class CollectionButton extends StatelessWidget {
-  const CollectionButton(this.collection);
+  const CollectionButton(this.collection, {super.key});
 
   final Collection collection;
 
@@ -25,21 +25,27 @@ class CollectionButton extends StatelessWidget {
           Navigator.of(context).pushNamed(collection.routeName);
         }
       },
-      child: Column(
-        children: [
-          SvgPicture.asset(
-            collection.assetName,
-            width: 64.w,
-          ),
-          SizedBox(
-            width: 64.w,
-            child: Text(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).cardColor
+              : Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        width: 64.w,
+        child: Column(
+          children: [
+            SvgPicture.asset(
+              collection.assetName,
+              width: 64.w,
+            ),
+            Text(
               collection.title,
               style: Theme.of(context).textTheme.bodyLarge,
               textAlign: TextAlign.center,
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

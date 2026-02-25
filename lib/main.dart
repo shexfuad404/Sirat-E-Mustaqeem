@@ -21,12 +21,17 @@ import 'src/core/util/bloc/theme/theme_bloc.dart';
 import 'src/core/util/bloc/time_format/time_format_bloc.dart';
 import 'src/features/bottom_tab/bloc/tab/tab_bloc.dart';
 import 'src/features/quran/bloc/quran_theme/quran_theme_bloc.dart';
+import 'src/features/splash/screen/splash_screen.dart';
+
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await NotificationService().init();
   HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: HydratedStorageDirectory((await getApplicationDocumentsDirectory()).path),
+    storageDirectory: HydratedStorageDirectory(
+        (await getApplicationDocumentsDirectory()).path),
   );
   runApp(MyApp());
 }
@@ -79,38 +84,24 @@ class MyApp extends StatelessWidget {
           create: (context) => LocationBloc(),
         ),
       ],
-      child: FutureBuilder<void>(
-          future: SystemChrome.setPreferredOrientations(
-            [
-              DeviceOrientation.portraitUp,
-            ],
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done)
-              return ScreenUtilInit(
-                designSize: Size(414, 896),
-                builder: (context, child) {
-                  return BlocBuilder<ThemeBloc, ThemeState>(
-                    builder: (context, state) {
-                      return MaterialApp(
-                        title: 'Sirate Mustaqeem',
-                        debugShowCheckedModeBanner: false,
-                        color: Colors.white,
-                        theme: state.currentTheme,
-                        initialRoute: RouteGenerator.splash,
-                        onGenerateRoute: RouteGenerator.generateRoute,
-                      );
-                    },
-                  );
-                },
+      child: ScreenUtilInit(
+        designSize: Size(414, 896),
+        builder: (context, child) {
+          return BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, state) {
+              return MaterialApp(
+                title: 'Sirate Mustaqeem',
+                debugShowCheckedModeBanner: false,
+                color: Colors.white,
+                theme: state.currentTheme,
+                navigatorKey: appNavigatorKey,
+                home: const SplashScreen(),
+                onGenerateRoute: RouteGenerator.generateRoute,
               );
-            return MaterialApp(
-              title: 'Sirate Mustaqeem',
-              debugShowCheckedModeBanner: false,
-              color: Colors.white,
-              home: Container(),
-            );
-          }),
+            },
+          );
+        },
+      ),
     );
   }
 }

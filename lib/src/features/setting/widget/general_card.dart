@@ -23,26 +23,12 @@ class GeneralCard extends StatelessWidget {
               width: 64.w,
             ),
           ),
+          SizedBox(
+            height: 8.h,
+          ),
           Text(
             'Sirate Mustaqeem',
             style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          SizedBox(
-            height: 8.h,
-          ),
-          Text(
-            'an app by',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          SizedBox(
-            height: 8.h,
-          ),
-          Text(
-            'Dev Technologies',
-            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
-                ),
           ),
           SizedBox(
             height: 8.h,

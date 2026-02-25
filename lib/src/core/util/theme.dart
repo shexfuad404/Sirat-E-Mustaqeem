@@ -5,12 +5,13 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'constants.dart';
 
-enum AppTheme { Dark, Light }
+enum AppTheme { dark, light }
 
 final Map<AppTheme, ThemeData> kAppThemeData = {
-  AppTheme.Dark: ThemeData.dark().copyWith(
+  AppTheme.dark: ThemeData.dark().copyWith(
     primaryColor: kDarkPrimary,
     scaffoldBackgroundColor: kDarkBg,
+    cardColor: kDarkPlaceholderText,
     textTheme: GoogleFonts.openSansTextTheme(
       TextTheme().copyWith(
         displayLarge: TextStyle(
@@ -46,6 +47,12 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
           fontSize: 14.sp,
           color: kDarkTextColor,
         ),
+      ),
+    ),
+    dropdownMenuTheme: DropdownMenuThemeData(
+      textStyle: TextStyle(
+        fontSize: 14.sp,
+        color: kDarkTextColor,
       ),
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -86,7 +93,7 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
         color: kDarkPrimary,
         size: 24.sp,
       ),
-      unselectedItemColor: kDarkPlaceholderText,
+      unselectedItemColor: Color(0xFF7A7E88),
       unselectedIconTheme: IconThemeData(
         color: kDarkPlaceholderText,
         size: 24.sp,
@@ -95,6 +102,7 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     appBarTheme: AppBarTheme(
       backgroundColor: kDarkBg,
       elevation: 0,
+      centerTitle: true,
       systemOverlayStyle: SystemUiOverlayStyle.light,
       iconTheme: IconThemeData(
         color: kDarkTextColor,
@@ -114,9 +122,10 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
         .copyWith(surface: kDarkPlaceholder)
         .copyWith(error: kDarkError),
   ),
-  AppTheme.Light: ThemeData.light().copyWith(
+  AppTheme.light: ThemeData.light().copyWith(
     primaryColor: kLightPrimary,
     scaffoldBackgroundColor: kLightBg,
+    cardColor: Color(0xFFF8FAF9),
     textTheme: GoogleFonts.openSansTextTheme(
       TextTheme().copyWith(
         displayLarge: TextStyle(
@@ -154,6 +163,14 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
         ),
       ),
     ),
+    dropdownMenuTheme: DropdownMenuThemeData(
+      // dropdownColor: kLightBg,
+      textStyle: TextStyle(
+        fontSize: 14.sp,
+        color: kLightTextColor,
+      ),
+      // iconEnabledColor: kLightTextColor,
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
         elevation: WidgetStateProperty.all(5),
@@ -187,11 +204,14 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     ),
     appBarTheme: AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle.dark,
-      backgroundColor: kLightPrimary,
+      elevation: 0,
+      centerTitle: true,
+      scrolledUnderElevation: 0,
+      backgroundColor: kDarkTextColor,
       titleTextStyle: TextStyle(
         fontSize: 16.sp,
         fontWeight: FontWeight.bold,
-        color: kDarkTextColor,
+        color: kLightTextColor,
       ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(

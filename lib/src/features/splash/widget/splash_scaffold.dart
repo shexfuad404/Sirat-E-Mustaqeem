@@ -24,36 +24,23 @@ class SplashScaffold extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        extendBodyBehindAppBar: true,
-        extendBody: true,
-        appBar: AppBar(
-          // backgroundColor: Colors.black,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          toolbarHeight: 0,
-          systemOverlayStyle: Theme.of(context).appBarTheme.systemOverlayStyle,
-        ),
+        // extendBodyBehindAppBar: true,
+        // extendBody: true,
+        // appBar: AppBar(
+        //   // backgroundColor: Colors.black,
+        //   backgroundColor: Colors.transparent,
+        //   elevation: 0,
+        //   toolbarHeight: 0,
+        //   systemOverlayStyle: Theme.of(context).appBarTheme.systemOverlayStyle,
+        // ),
         body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ClipRRect(
-                borderRadius: kAppIconBorderRadius,
-                child: SvgPicture.asset(
-                  'assets/images/core/svg/app_logo.svg',
-                  width: 128.w,
-                ),
-              ),
-              // SizedBox(
-              //   height: 16.h,
-              // ),
-              // Text(
-              //   'Brought to you by Dev Technologies',
-              //   style: GoogleFonts.kaushanScript(
-              //     fontSize: 16.sp,
-              //   ),
-              // )
-            ],
+          child: ClipRRect(
+            borderRadius: kAppIconBorderRadius,
+            child: SvgPicture.asset(
+              'assets/images/core/svg/splash.svg',
+              height: double.infinity,
+              fit: BoxFit.fill,
+            ),
           ),
         ),
       ),

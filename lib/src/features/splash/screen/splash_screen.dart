@@ -14,12 +14,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    checkDatabaseAvailability(context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkDatabaseAvailability(context);
+    });
   }
 
   @override

@@ -38,12 +38,20 @@ class JuzCard extends StatelessWidget {
         padding: EdgeInsets.only(
           left: 16.w,
         ),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Theme.of(context).colorScheme.surface,
+              width: 1.sp,
+            ),
+          ),
+        ),
         child: Row(
           children: [
             Container(
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
-                  borderRadius: kCardBorderRadius,
+                  borderRadius: kAppIconBorderRadius,
                 ),
                 color: Theme.of(context).primaryColor.withOpacity(
                       0.2,
@@ -57,6 +65,7 @@ class JuzCard extends StatelessWidget {
                   '${index + 1}',
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
                       ),
                 ),
               ),
@@ -68,14 +77,6 @@ class JuzCard extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(
                   vertical: 16.h,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).colorScheme.surface,
-                      width: 2.sp,
-                    ),
-                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
