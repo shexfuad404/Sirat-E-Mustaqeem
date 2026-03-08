@@ -53,7 +53,7 @@ class JuzCard extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: kAppIconBorderRadius,
                 ),
-                color: Theme.of(context).primaryColor.withOpacity(
+                color: Theme.of(context).primaryColor.withValues(alpha: 
                       0.2,
                     ),
               ),

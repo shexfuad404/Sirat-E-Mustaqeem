@@ -68,7 +68,7 @@ class SuccessWidget extends StatelessWidget {
                 padding: kCardPadding,
                 decoration: BoxDecoration(
                     color:
-                        Theme.of(context).colorScheme.surface.withOpacity(0.2),
+                        Theme.of(context).colorScheme.surface.withValues(alpha: 0.2),
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(32.r),
                       topRight: Radius.circular(32.r),

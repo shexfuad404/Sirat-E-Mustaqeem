@@ -83,7 +83,7 @@ class _JuzScrollSelectionState extends State<JuzScrollSelection> {
                                   : Theme.of(context)
                                       .colorScheme
                                       .surface
-                                      .withOpacity(
+                                      .withValues(alpha: 
                                         0.4,
                                       ),
                             ),

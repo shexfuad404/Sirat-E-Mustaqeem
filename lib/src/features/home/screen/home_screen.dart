@@ -1,13 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart' show Theme;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sirat_e_mustaqeem/src/features/home/widget/home_sliver_appbar.dart';
+import 'package:sirat_e_mustaqeem/src/features/home/widget/home_sliver_list.dart';
 
 import '../bloc/appbar_bloc/appbar_bloc.dart';
-import '../widget/home_sliver_appbar.dart';
-import '../widget/home_sliver_list.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen();
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,13 +60,16 @@ class _ScrollViewState extends State<ScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: controller,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      slivers: [
-        const HomeSliverAppbar(),
-        const HomeSliverList(),
-      ],
+    return Container(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: CustomScrollView(
+        controller: controller,
+        physics: const BouncingScrollPhysics(),
+        slivers: const [
+          HomeSliverAppbar(),
+          HomeSliverList(),
+        ],
+      ),
     );
   }
 }

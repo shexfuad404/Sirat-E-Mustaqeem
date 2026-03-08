@@ -83,8 +83,8 @@ class _SurahScrollSelectionState extends State<SurahScrollSelection> {
                                   : Theme.of(context)
                                       .colorScheme
                                       .surface
-                                      .withOpacity(
-                                        0.4,
+                                      .withValues(
+                                        alpha: 0.4,
                                       ),
                             ),
                             child: FittedBox(

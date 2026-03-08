@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart'
+    show AlignedGridView;
 
 import '../../utils/sirat_card.dart';
 import '../model/collection.dart';
@@ -12,13 +13,12 @@ class CollectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SiratCard(
+      margin: EdgeInsets.zero,
+      padding: EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          SizedBox(
-            height: 10.h,
-          ),
           Text(
             'Collection',
             style: Theme.of(context).textTheme.titleLarge!.copyWith(

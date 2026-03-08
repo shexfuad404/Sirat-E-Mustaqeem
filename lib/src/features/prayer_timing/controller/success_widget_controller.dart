@@ -62,7 +62,7 @@ class SuccessWidgetController {
       (index) => Container(
         decoration: index == timingCount
             ? BoxDecoration(
-                color: kDarkPlaceholder.withOpacity(0.8),
+                color: kDarkPlaceholder.withValues(alpha: 0.8),
                 borderRadius: BorderRadius.circular(
                   8.r,
                 ),

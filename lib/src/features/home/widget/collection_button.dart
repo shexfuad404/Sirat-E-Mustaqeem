@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart'
+    show Theme, Colors, BorderRadius, BoxDecoration, showDialog;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -12,6 +14,8 @@ class CollectionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
     return GestureDetector(
       onTap: () {
         if (collection.routeName == 'Coming Soon') {
@@ -27,23 +31,35 @@ class CollectionButton extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? Theme.of(context).cardColor
-              : Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(10.r),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.08)
+              : primaryColor.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(16.r),
         ),
-        width: 64.w,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SvgPicture.asset(
               collection.assetName,
               width: 64.w,
+              // height: 32.w,
+              // colorFilter: ColorFilter.mode(
+              //   primaryColor,
+              //   BlendMode.srcIn,
+              // ),
             ),
+            SizedBox(height: 6.h),
             Text(
               collection.title,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: TextStyle(
+                fontSize: 11.sp,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.white70 : Colors.black87,
+              ),
               textAlign: TextAlign.center,
-            )
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ),

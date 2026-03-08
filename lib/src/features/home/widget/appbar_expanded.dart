@@ -60,14 +60,14 @@ class AppBarExpanded extends StatelessWidget {
                 //   'assets/images/home_icon/svg/logo.svg',
                 //   width: 100.w,
                 // ),
-                SvgPicture.asset(
-                  "assets/images/dua_icon/svg/bismillah.svg",
-                  width: 150.w,
-                  colorFilter: ColorFilter.mode(
-                    Colors.white,
-                    BlendMode.srcIn,
-                  ),
-                ),
+                // SvgPicture.asset(
+                //   "assets/images/dua_icon/svg/bismillah.svg",
+                //   width: 150.w,
+                //   colorFilter: ColorFilter.mode(
+                //     Colors.white,
+                //     BlendMode.srcIn,
+                //   ),
+                // ),
                 // Basmallah(),
                 // Text(
                 //   'السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ',

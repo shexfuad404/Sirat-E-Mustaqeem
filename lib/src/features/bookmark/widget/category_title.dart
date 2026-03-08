@@ -20,7 +20,7 @@ class CategoryTitle extends StatelessWidget {
           topRight: Radius.circular(16.r),
           bottomRight: Radius.circular(16.r),
         ),
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.4),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.4),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,

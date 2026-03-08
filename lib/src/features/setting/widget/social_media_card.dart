@@ -12,7 +12,15 @@ class SocialMediaCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SiratCard(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            'Connect',
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          SizedBox(height: 8.h),
           Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: socialMediaList.length >= 3

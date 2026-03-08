@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../utils/sirat_card.dart';
 import '../model/general_option.dart';
@@ -13,40 +12,20 @@ class GeneralCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return SiratCard(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(
-              8.r,
-            ),
-            child: SvgPicture.asset(
-              'assets/images/core/svg/app_logo.svg',
-              width: 64.w,
-            ),
-          ),
-          SizedBox(
-            height: 8.h,
-          ),
           Text(
-            'Sirate Mustaqeem',
-            style: Theme.of(context).textTheme.headlineSmall,
+            'General',
+            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
           ),
-          SizedBox(
-            height: 8.h,
-          ),
-          Text(
-            'The \'Sirate Mustaqeem\' app is a prodictivity app '
-            'to help Muslims creating better habits '
-            'and increasing their \'iman\' (faith) '
-            ' and \'ibadah\' (acts of worship).',
-            textAlign: TextAlign.center,
-          ),
+          SizedBox(height: 8.h),
           ...List.generate(
             generalOptions.length,
             (index) => Column(
               children: [
-                Divider(
-                  height: 16.h,
-                ),
+                if (index != 0) Divider(),
                 GeneralOptionCard(
                   imagePath: generalOptions[index].imagePath,
                   onTap: generalOptions[index].onTap ??
