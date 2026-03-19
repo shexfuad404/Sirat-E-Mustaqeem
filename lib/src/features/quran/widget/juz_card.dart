@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/util/constants.dart';
 import '../../../core/util/model/juz.dart';
 import '../bloc/selected_juz/selected_juz_bloc.dart';
+import '../cubit/quran_reading_cubit.dart';
 import '../cubit/quran_cubit.dart';
 import '../screen/selected_quran_screen.dart';
 
@@ -17,6 +18,12 @@ class JuzCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool fromNav = BlocProvider.of<QuranCubit>(context).state.fromNav;
+    QuranReadingCubit? readingCubit;
+    try {
+      readingCubit = BlocProvider.of<QuranReadingCubit>(context);
+    } catch (_) {
+      readingCubit = null;
+    }
 
     return GestureDetector(
       onTap: () {
@@ -26,9 +33,15 @@ class JuzCard extends StatelessWidget {
               create: (context) => SelectedJuzBloc(juzs, index),
               child: BlocProvider(
                 create: (context) => QuranCubit(fromNav),
-                child: SelectedQuranScreen(
-                  surah: false,
-                ),
+                child: readingCubit != null
+                    ? BlocProvider.value(
+                        value: readingCubit,
+                        child: const SelectedQuranScreen(surah: false),
+                      )
+                    : BlocProvider(
+                        create: (context) => QuranReadingCubit(),
+                        child: const SelectedQuranScreen(surah: false),
+                      ),
               ),
             ),
           ),
@@ -53,8 +66,8 @@ class JuzCard extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: kAppIconBorderRadius,
                 ),
-                color: Theme.of(context).primaryColor.withValues(alpha: 
-                      0.2,
+                color: Theme.of(context).primaryColor.withValues(
+                      alpha: 0.2,
                     ),
               ),
               width: 48.w,

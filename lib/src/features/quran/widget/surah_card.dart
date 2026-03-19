@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/util/constants.dart';
 import '../../../core/util/model/surah.dart';
 import '../bloc/selected_surah/selected_surah_bloc.dart';
+import '../cubit/quran_reading_cubit.dart';
 import '../cubit/quran_cubit.dart';
 import '../screen/selected_quran_screen.dart';
 
@@ -17,6 +18,12 @@ class SurahCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool fromNav = BlocProvider.of<QuranCubit>(context).state.fromNav;
+    QuranReadingCubit? readingCubit;
+    try {
+      readingCubit = BlocProvider.of<QuranReadingCubit>(context);
+    } catch (_) {
+      readingCubit = null;
+    }
 
     return GestureDetector(
       onTap: () {
@@ -26,7 +33,15 @@ class SurahCard extends StatelessWidget {
               create: (context) => SelectedSurahBloc(surahs, index),
               child: BlocProvider(
                 create: (context) => QuranCubit(fromNav),
-                child: SelectedQuranScreen(surah: true),
+                child: readingCubit != null
+                    ? BlocProvider.value(
+                        value: readingCubit,
+                        child: const SelectedQuranScreen(surah: true),
+                      )
+                    : BlocProvider(
+                        create: (context) => QuranReadingCubit(),
+                        child: const SelectedQuranScreen(surah: true),
+                      ),
               ),
             ),
           ),
