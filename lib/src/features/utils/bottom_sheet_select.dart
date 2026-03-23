@@ -131,7 +131,7 @@ class _BottomSheetSelectContent<T> extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            SizedBox(height: 6.h),
+            SizedBox(height: 10.h),
             Text(
               label,
               textAlign: TextAlign.center,
@@ -140,7 +140,9 @@ class _BottomSheetSelectContent<T> extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 8.h),
+            Divider(),
+            SizedBox(height: 4.h),
             SizedBox(
               height: effectiveListHeight,
               child: ListView.separated(

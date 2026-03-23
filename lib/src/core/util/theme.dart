@@ -12,6 +12,7 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     primaryColor: kDarkPrimary,
     scaffoldBackgroundColor: kDarkBg,
     cardColor: kDarkPlaceholderText,
+    dividerTheme: DividerThemeData(color: kDarkPlaceholder),
     textTheme: GoogleFonts.openSansTextTheme(
       TextTheme().copyWith(
         displayLarge: TextStyle(
@@ -126,6 +127,7 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     primaryColor: kLightPrimary,
     scaffoldBackgroundColor: kLightBg,
     cardColor: Color(0xFFF8FAF9),
+    dividerTheme: DividerThemeData(color: kLightPlaceholder),
     textTheme: GoogleFonts.openSansTextTheme(
       TextTheme().copyWith(
         displayLarge: TextStyle(

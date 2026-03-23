@@ -68,6 +68,20 @@ class Quran {
       return urduTranslation;
     }
   }
+
+  String getVerseText({
+    int? verseNumberOverride,
+  }) {
+    final effectiveVerseNumber = verseNumberOverride ?? ayatNumber;
+    return quran_package.getVerse(surahId, effectiveVerseNumber,
+        verseEndSymbol: true);
+  }
+
+  int getVerseCount({
+    int? surahNumber,
+  }) {
+    return quran_package.getVerseCount(surahId);
+  }
 }
 
 class Qurans {
