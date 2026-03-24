@@ -1,3 +1,5 @@
+import 'package:quran/quran.dart' as quran_package;
+
 class Surah {
   final int id;
   final String nameEn;
@@ -17,18 +19,33 @@ class Surah {
 class Surahs {
   final List<Surah> _surahs = [];
 
-  void initializeData(List<Map<String, Object?>> datas) {
-    for (final Map<String, Object?> data in datas) {
+  void initializeFromPackage() {
+    if (_surahs.isNotEmpty) {
+      return;
+    }
+
+    for (int surahId = 1; surahId <= 114; surahId++) {
+      final String placeRaw = quran_package.getPlaceOfRevelation(surahId);
+      final String place = _normalizePlace(placeRaw);
+
       _surahs.add(
         Surah(
-          id: data['id'] as int,
-          nameEn: data['name_en'].toString(),
-          nameAr: data['name_ar'].toString(),
-          ayats: data['ayats'] as int,
-          place: data['place'].toString(),
+          id: surahId,
+          nameEn: quran_package.getSurahNameEnglish(surahId),
+          nameAr: quran_package.getSurahNameArabic(surahId),
+          ayats: quran_package.getVerseCount(surahId),
+          place: place,
         ),
       );
     }
+  }
+
+  String _normalizePlace(String raw) {
+    final lower = raw.trim().toLowerCase();
+    if (lower.contains('medina') || lower.contains('madina')) {
+      return 'Madina';
+    }
+    return 'Makki';
   }
 
   List<Surah> get surahs => _surahs;
