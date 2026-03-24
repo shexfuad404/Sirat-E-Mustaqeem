@@ -1,18 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-
-import '../../model/allah_name.dart';
+import 'package:muslim_data_flutter/muslim_data_flutter.dart';
 
 part 'allah_name_event.dart';
 part 'allah_name_state.dart';
 
 class AllahNameBloc extends Bloc<AllahNameEvent, AllahNameState> {
-  AllahNameBloc() : super(AllahNameState(AllahNames())) {
+  AllahNameBloc() : super(AllahNameState([])) {
     on<AllahNameEvent>((event, emit) async {
-      // emit(DownloadLoading());
       if (event is FetchAllahName) {
-        state.allahNames.initializeData(event.names);
-        emit(AllahNameState(state.allahNames));
+        final muslimRepo = MuslimRepository();
+        final names = await muslimRepo.getNames(language: Language.en);
+        emit(AllahNameState(names));
       }
     });
   }

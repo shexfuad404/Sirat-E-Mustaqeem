@@ -20,9 +20,9 @@ class AllahNameScreen extends StatelessWidget {
             child: Padding(
               padding: kPagePadding,
               child: ListView.builder(
-                itemCount: state.allahNames.allahNames.length,
+                itemCount: state.allahNames.length,
                 itemBuilder: (context, index) => NameCard(
-                  state.allahNames.allahNames[index],
+                  state.allahNames[index],
                 ),
               ),
             ),

@@ -1,7 +1,7 @@
 part of 'name_bloc.dart';
 
 class NameState extends Equatable {
-  final AllahName name;
+  final NameOfAllah name;
 
   const NameState(this.name);
 

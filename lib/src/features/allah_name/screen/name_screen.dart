@@ -24,7 +24,7 @@ class NameScreen extends StatelessWidget {
                     flex: 3,
                   ),
                   Text(
-                    state.name.english,
+                    state.name.transliteration,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
                         ),
@@ -34,7 +34,7 @@ class NameScreen extends StatelessWidget {
                     flex: 2,
                   ),
                   Text(
-                    state.name.arabic,
+                    state.name.name,
                     style: Theme.of(context).textTheme.displayLarge!.copyWith(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,
@@ -46,27 +46,8 @@ class NameScreen extends StatelessWidget {
                     flex: 2,
                   ),
                   Text(
-                    state.name.englishMeaning,
+                    state.name.translation,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(),
-                    textAlign: TextAlign.center,
-                  ),
-                  Spacer(
-                    flex: 1,
-                  ),
-                  Text(
-                    state.name.urduMeaning,
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          color: Theme.of(context).primaryColor,
-                          fontFamily: 'Jameel',
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  Spacer(
-                    flex: 1,
-                  ),
-                  Text(
-                    state.name.englishExplanation,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
                     textAlign: TextAlign.center,
                   ),
                   Spacer(
