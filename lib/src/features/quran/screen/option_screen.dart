@@ -29,9 +29,39 @@ const List<String> _translationModes = [
 ];
 const List<String> _normalQuranFonts = ['Uthman', 'arsura'];
 const List<String> _qcfScrollDirections = ['Vertical', 'Horizontal'];
+const List<String> _translationGoogleFonts = [
+  'Poppins',
+  'Roboto',
+  'Noto Sans',
+  'Lato',
+  'Montserrat',
+];
 
 class OptionScreen extends StatelessWidget {
   const OptionScreen();
+
+  List<Widget> _buildSettingsItems(QuranThemeState state) {
+    final items = <Widget>[
+      const QuranTypeOption(),
+      if (state.quranType == 'QCF') const QcfScrollDirectionOption(),
+      const ShowTranslationOption(),
+      const TranslationMode(),
+      const WithArabs(),
+      if (state.quranType != 'QCF') const QuranFontSize(),
+      if (state.quranType != 'QCF') const QuranFontFamily(),
+      const TranslationFontSize(),
+      const TranslationFontFamily(),
+    ];
+
+    final separated = <Widget>[];
+    for (var i = 0; i < items.length; i++) {
+      separated.add(items[i]);
+      if (i != items.length - 1) {
+        separated.add(const Divider());
+      }
+    }
+    return separated;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,29 +75,17 @@ class OptionScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Padding(
             padding: kPagePadding,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 16.h,
-                ),
-                QuranTypeOption(),
-                Divider(),
-                QcfScrollDirectionOption(),
-                Divider(),
-                ShowTranslationOption(),
-                Divider(),
-                TranslationMode(),
-                Divider(),
-                WithArabs(),
-                Divider(),
-                QuranFontSize(),
-                Divider(),
-                QuranFontFamily(),
-                Divider(),
-                TranslationFontSize(),
-                Divider(),
-                TranslationFontFamily(),
-              ],
+            child: BlocBuilder<QuranThemeBloc, QuranThemeState>(
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    SizedBox(
+                      height: 16.h,
+                    ),
+                    ..._buildSettingsItems(state),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -334,41 +352,25 @@ class TranslationFontFamily extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'Translation font family',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
-                .copyWith(color: Theme.of(context).primaryColor),
-          ),
-          DropdownButtonHideUnderline(
-            child: BlocBuilder<QuranThemeBloc, QuranThemeState>(
-              builder: (context, state) {
-                return DropdownButton(
-                  items: List.generate(
-                    1,
-                    (index) => DropdownMenuItem(
-                      child: BlocBuilder<QuranThemeBloc, QuranThemeState>(
-                        builder: (context, state) {
-                          return Text(
-                            state.translationFontFamily,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  onChanged: (value) {},
-                );
-              },
-            ),
-          )
-        ],
-      ),
+    return BlocBuilder<QuranThemeBloc, QuranThemeState>(
+      builder: (context, state) {
+        final bool isUrdu = state.translationMode == 'Urdu';
+        final options = isUrdu ? const ['Jameel'] : _translationGoogleFonts;
+
+        final selectedValue = options.contains(state.translationFontFamily)
+            ? state.translationFontFamily
+            : options.first;
+
+        return BottomSheetSelect<String>(
+          label: 'Translation font family',
+          value: selectedValue,
+          options: options,
+          onChanged: (value) {
+            BlocProvider.of<QuranThemeBloc>(context)
+                .add(SetTranslationFontFamily(value));
+          },
+        );
+      },
     );
   }
 }

@@ -32,6 +32,7 @@ class DatabaseService {
       final pathName = '$databasesPath/$DATABASE_FILE';
 
       final Database db = await openDatabase(pathName);
+      await _ensureQuranFavoritesTable(db);
 
       await DatabaseTable.cachedDataFromDb(db, context);
 
@@ -53,6 +54,16 @@ class DatabaseService {
         ),
       );
     }
+  }
+
+  Future<void> _ensureQuranFavoritesTable(Database db) async {
+    await db.execute('''
+      CREATE TABLE IF NOT EXISTS quran_favourites (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        ayat_id INTEGER NOT NULL UNIQUE,
+        created_at TEXT NOT NULL
+      )
+    ''');
   }
 
   Future<List<Map<String, Object?>>> splitQuranQuery(Database db) async {
@@ -229,26 +240,48 @@ class DatabaseService {
     return duas;
   }
 
-  Future<List<Map<String, Object?>>> toggleQuranFavorite(
-      Database db, Quran quran) async {
-    List<Map> selectedQuran = await db
-        .rawQuery('SELECT * FROM quran WHERE ayatId = ?', [quran.ayatId]);
+  Future<List<int>> toggleQuranFavorite(Database db, Quran quran) async {
+    await _ensureQuranFavoritesTable(db);
 
-    if (selectedQuran[0]['favourite'] == 0) {
-      await db.rawUpdate(
-        'UPDATE quran SET favourite = ? WHERE ayatId = ?',
-        [1, quran.ayatId],
+    final existing = await db.query(
+      'quran_favourites',
+      columns: ['id'],
+      where: 'ayat_id = ?',
+      whereArgs: [quran.ayatId],
+      limit: 1,
+    );
+
+    if (existing.isEmpty) {
+      await db.insert(
+        'quran_favourites',
+        {
+          'ayat_id': quran.ayatId,
+          'created_at': DateTime.now().toIso8601String(),
+        },
       );
     } else {
-      await db.rawUpdate(
-        'UPDATE quran SET favourite = ? WHERE ayatId = ?',
-        [0, quran.ayatId],
+      await db.delete(
+        'quran_favourites',
+        where: 'ayat_id = ?',
+        whereArgs: [quran.ayatId],
       );
     }
 
-    List<Map<String, Object?>> qurans =
-        await DatabaseService().splitQuranQuery(db);
+    return await getFavoriteAyatIdsByLatest(db);
+  }
 
-    return qurans;
+  Future<List<int>> getFavoriteAyatIdsByLatest(Database db) async {
+    await _ensureQuranFavoritesTable(db);
+
+    final rows = await db.query(
+      'quran_favourites',
+      columns: ['ayat_id'],
+      orderBy: 'datetime(created_at) DESC, id DESC',
+    );
+
+    return rows
+        .map((row) => int.tryParse(row['ayat_id'].toString()))
+        .whereType<int>()
+        .toList();
   }
 }

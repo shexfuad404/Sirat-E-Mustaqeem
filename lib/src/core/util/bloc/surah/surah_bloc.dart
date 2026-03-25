@@ -10,7 +10,7 @@ class SurahBloc extends Bloc<SurahEvent, SurahState> {
   SurahBloc() : super(SurahState(Surahs())) {
     on<SurahEvent>((event, emit) async {
       if (event is FetchSurah) {
-        state.surahs.initializeData(event.datas);
+        state.surahs.initializeFromPackage();
 
         emit(SurahState(state.surahs));
       }

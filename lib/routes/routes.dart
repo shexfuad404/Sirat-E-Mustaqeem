@@ -10,6 +10,7 @@ import '../src/features/permission/screen/location_permission_screen.dart';
 import '../src/features/permission/screen/notification_permission_screen.dart';
 import '../src/features/prayer_timing/screen/prayer_timing_screen.dart';
 import '../src/features/qibla/screen/qibla_screen.dart';
+import '../src/features/quran/screen/option_screen.dart';
 import '../src/features/quran/screen/quran_screen.dart';
 import '../src/features/setting/screen/thankyou_screen.dart';
 import '../src/features/splash/screen/splash_screen.dart';
@@ -27,6 +28,7 @@ class RouteGenerator {
   static const String tasbih = '/tasbih';
   static const String dua = '/dua';
   static const String quran = '/quran';
+  static const String quranSettings = '/quran_settings';
   static const String locationPermission = '/location_permission';
   static const String notificationPermission = '/notification_permission';
 
@@ -56,6 +58,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const DuaScreen());
       case quran:
         return MaterialPageRoute(builder: (_) => const QuranScreen());
+      case quranSettings:
+        return MaterialPageRoute(builder: (_) => const OptionScreen());
       case locationPermission:
         return MaterialPageRoute(
             builder: (_) => const LocationPermissionScreen());

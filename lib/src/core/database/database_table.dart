@@ -20,17 +20,15 @@ class DatabaseTable {
         FetchDua(duas),
       );
 
-      final List<Map<String, Object?>> finalQurans =
-          await DatabaseService().splitQuranQuery(db);
-
       BlocProvider.of<QuranBloc>(context).add(
-        FetchQuran(finalQurans),
+        FetchQuran(
+          favoriteAyatIds:
+              await DatabaseService().getFavoriteAyatIdsByLatest(db),
+        ),
       );
 
-      List<Map<String, Object?>> surahs = await db.query('surah');
-
       BlocProvider.of<SurahBloc>(context).add(
-        FetchSurah(surahs),
+        FetchSurah(),
       );
 
       List<Map<String, Object?>> tasbihs = await db.query('tasbih');

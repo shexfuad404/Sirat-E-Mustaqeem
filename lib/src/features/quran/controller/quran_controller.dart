@@ -7,7 +7,14 @@ import '../../../core/util/bloc/quran/quran_bloc.dart';
 import '../../../core/util/model/quran.dart';
 
 Future<void> toggleQuranFavorite(BuildContext context, Quran quran) async {
-  final data = await DatabaseService()
-      .toggleQuranFavorite(BlocProvider.of<DatabaseBloc>(context).db!, quran);
-  BlocProvider.of<QuranBloc>(context).add(UpdateQuran(data));
+  final db = BlocProvider.of<DatabaseBloc>(context).db;
+  if (db == null) {
+    return;
+  }
+
+  final favoriteAyatIds =
+      await DatabaseService().toggleQuranFavorite(db, quran);
+  BlocProvider.of<QuranBloc>(context).add(
+    SyncQuranFavorites(favoriteAyatIds),
+  );
 }

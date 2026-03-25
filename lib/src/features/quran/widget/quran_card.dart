@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:qcf_quran/qcf_quran.dart';
 
 import '../../../core/util/bloc/quran/quran_bloc.dart';
@@ -103,11 +104,12 @@ class QuranCard extends StatelessWidget {
                             verseNumberOverride: verseNumberOverrideForQcf,
                           ),
                           textAlign: TextAlign.end,
-                          style:
-                              Theme.of(context).textTheme.titleLarge!.copyWith(
-                                    fontFamily: 'Jameel',
-                                    fontSize: state.translationFontSize,
-                                  ),
+                          style: _translationTextStyle(
+                            context: context,
+                            translationMode: state.translationMode,
+                            translationFontFamily: state.translationFontFamily,
+                            fontSize: state.translationFontSize,
+                          ),
                         ),
                       SizedBox(
                         height: 8.h,
@@ -120,6 +122,37 @@ class QuranCard extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+TextStyle _translationTextStyle({
+  required BuildContext context,
+  required String translationMode,
+  required String translationFontFamily,
+  required double fontSize,
+}) {
+  final baseStyle = Theme.of(context).textTheme.titleLarge!;
+
+  if (translationMode == 'Urdu') {
+    return baseStyle.copyWith(
+      fontFamily: 'Jameel',
+      fontSize: fontSize,
+    );
+  }
+
+  try {
+    return GoogleFonts.getFont(
+      translationFontFamily,
+      textStyle: baseStyle.copyWith(
+        fontSize: fontSize,
+      ),
+    );
+  } catch (_) {
+    return GoogleFonts.poppins(
+      textStyle: baseStyle.copyWith(
+        fontSize: fontSize,
+      ),
     );
   }
 }

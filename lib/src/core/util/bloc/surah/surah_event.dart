@@ -5,10 +5,8 @@ abstract class SurahEvent extends Equatable {
 }
 
 class FetchSurah extends SurahEvent {
-  final List<Map<String, Object?>> datas;
-
-  FetchSurah(this.datas);
+  const FetchSurah();
 
   @override
-  List<Object> get props => [datas];
+  List<Object> get props => [];
 }

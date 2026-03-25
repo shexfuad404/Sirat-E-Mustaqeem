@@ -31,6 +31,26 @@ class Quran {
     required this.favorite,
   });
 
+  Quran copyWith({
+    int? favorite,
+  }) {
+    return Quran(
+      ayatId: ayatId,
+      ayatNumber: ayatNumber,
+      arabicText: arabicText,
+      urduTranslation: urduTranslation,
+      ayatSajda: ayatSajda,
+      surahRuku: surahRuku,
+      paraRuku: paraRuku,
+      paraId: paraId,
+      manzilNo: manzilNo,
+      ayatVisible: ayatVisible,
+      surahId: surahId,
+      withoutAerab: withoutAerab,
+      favorite: favorite ?? this.favorite,
+    );
+  }
+
   static const Map<String, quran_package.Translation> translationByMode = {
     'English (Saheeh)': quran_package.Translation.enSaheeh,
     'English (Clear Quran)': quran_package.Translation.enClearQuran,
@@ -85,28 +105,71 @@ class Quran {
 }
 
 class Qurans {
-  final List<Quran> _qurans = [];
+  List<Quran> _qurans = [];
+  List<int> _favoriteAyatIdsByLatest = [];
 
-  void initializeData(List<Map<String, Object?>> datas) {
-    for (final Map<String, Object?> data in datas) {
-      _qurans.add(
-        Quran(
-          ayatId: data['ayatId'] as int,
-          ayatNumber: data['ayatNumber'] as int,
-          arabicText: data['arabicText'].toString(),
-          urduTranslation: data['urduTranslation'].toString(),
-          ayatSajda: data['ayatSajda'] as int,
-          surahRuku: data['surahRuku'] as int,
-          paraRuku: data['paraRuku'] as int,
-          paraId: data['paraId'] as int,
-          manzilNo: data['manzilNo'] as int,
-          ayatVisible: data['ayatVisible'] as int,
-          surahId: data['surahId'] as int,
-          withoutAerab: data['withoutAerab'].toString(),
-          favorite: int.tryParse(data['favourite'].toString()) ?? 0,
-        ),
-      );
+  Qurans();
+
+  Qurans._(List<Quran> qurans) : _qurans = qurans;
+
+  void initializeFromPackage() {
+    if (_qurans.isNotEmpty) {
+      return;
     }
+
+    int ayatIdCounter = 1;
+
+    for (int surahId = 1; surahId <= 114; surahId++) {
+      final verseCount = quran_package.getVerseCount(surahId);
+
+      for (int ayatNumber = 1; ayatNumber <= verseCount; ayatNumber++) {
+        final arabicText = quran_package.getVerse(
+          surahId,
+          ayatNumber,
+          verseEndSymbol: true,
+        );
+        final urduText = quran_package.getVerseTranslation(
+          surahId,
+          ayatNumber,
+          translation: quran_package.Translation.urdu,
+        );
+        final paraId = quran_package.getJuzNumber(surahId, ayatNumber);
+
+        _qurans.add(
+          Quran(
+            ayatId: ayatIdCounter,
+            ayatNumber: ayatNumber,
+            arabicText: arabicText,
+            urduTranslation: urduText,
+            ayatSajda: 0,
+            surahRuku: 0,
+            paraRuku: 0,
+            paraId: paraId,
+            manzilNo: 0,
+            ayatVisible: 1,
+            surahId: surahId,
+            withoutAerab: arabicText,
+            favorite: 0,
+          ),
+        );
+        ayatIdCounter++;
+      }
+    }
+  }
+
+  Qurans withFavoriteAyatIds(List<int> orderedFavoriteAyatIds) {
+    final favoriteSet = orderedFavoriteAyatIds.toSet();
+    final updatedQurans = _qurans
+        .map(
+          (quran) => quran.copyWith(
+            favorite: favoriteSet.contains(quran.ayatId) ? 1 : 0,
+          ),
+        )
+        .toList(growable: false);
+
+    final synced = Qurans._(updatedQurans);
+    synced._favoriteAyatIdsByLatest = List<int>.of(orderedFavoriteAyatIds);
+    return synced;
   }
 
   List<Quran> getQuransBySurah(int surahId) {
@@ -118,7 +181,13 @@ class Qurans {
   }
 
   List<Quran> get getFavoritesQuran =>
-      _qurans.where((Quran quran) => quran.favorite == 1).toList();
+      _favoriteAyatIdsByLatest
+          .map(
+            (ayatId) => _qurans.where((quran) => quran.ayatId == ayatId),
+          )
+          .where((matches) => matches.isNotEmpty)
+          .map((matches) => matches.first)
+          .toList();
 
   List<Quran> get qurans => _qurans;
 }

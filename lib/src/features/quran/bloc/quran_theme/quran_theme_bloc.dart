@@ -6,18 +6,47 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 part 'quran_theme_event.dart';
 part 'quran_theme_state.dart';
 
+String _defaultTranslationFontForMode(String mode) {
+  switch (mode) {
+    case 'Urdu':
+      return 'Jameel';
+    case 'English (Saheeh)':
+    case 'English (Clear Quran)':
+      return 'Poppins';
+    case 'Turkish (Saheeh)':
+    case 'Persian (Hussein Dari)':
+    case 'Russian (Kuliev)':
+      return 'Roboto';
+    case 'Malayalam (Abdul Hameed)':
+    case 'Bengali':
+    case 'Indonesian':
+      return 'Noto Sans';
+    case 'French (Hamidullah)':
+    case 'Italian (Piccardo)':
+    case 'Portuguese':
+    case 'Spanish':
+      return 'Lato';
+    case 'Dutch (Siregar)':
+    case 'Chinese':
+    case 'Swedish':
+      return 'Montserrat';
+    default:
+      return 'Poppins';
+  }
+}
+
 class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
   QuranThemeBloc()
       : super(
           QuranThemeState(
             quranType: 'Normal',
             showTranslation: true,
-            translationMode: 'Urdu',
+            translationMode: 'English (Clear Quran)',
             withArabs: true,
             quranFontSize: 24,
             quranFontFamily: 'Uthman',
             translationFontSize: 16,
-            translationFontFamily: 'Jameel',
+            translationFontFamily: 'Poppins',
             qcfScrollDirection: 'Vertical',
           ),
         ) {
@@ -57,7 +86,7 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranFontSize: state.quranFontSize,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize,
-          translationFontFamily: state.translationFontFamily,
+          translationFontFamily: _defaultTranslationFontForMode(event.mode),
           qcfScrollDirection: state.qcfScrollDirection,
         ));
       }
@@ -140,6 +169,9 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
         ));
       }
       if (event is SetTranslationFontFamily) {
+        final safeFontFamily = state.translationMode == 'Urdu'
+            ? 'Jameel'
+            : event.family;
         emit(QuranThemeState(
           quranType: state.quranType,
           showTranslation: state.showTranslation,
@@ -148,7 +180,7 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranFontSize: state.quranFontSize,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize,
-          translationFontFamily: event.family,
+          translationFontFamily: safeFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
         ));
       }
@@ -175,15 +207,23 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
   @override
   QuranThemeState? fromJson(Map<String, dynamic> json) {
     try {
+      final mode = json['translationMode'].toString();
+      final savedFamily = json['translationFontFamily'].toString();
+      final safeFamily = mode == 'Urdu'
+          ? 'Jameel'
+          : (savedFamily.isEmpty
+              ? _defaultTranslationFontForMode(mode)
+              : savedFamily);
+
       return QuranThemeState(
         quranType: json['quranType']?.toString() ?? 'Normal',
         showTranslation: json['showTranslation'] as bool,
-        translationMode: json['translationMode'].toString(),
+        translationMode: mode,
         withArabs: json['withArabs'] as bool,
         quranFontSize: json['quranFontSize'] as double,
         quranFontFamily: json['quranFontFamily'].toString(),
         translationFontSize: json['translationFontSize'] as double,
-        translationFontFamily: json['translationFontFamily'].toString(),
+        translationFontFamily: safeFamily,
         qcfScrollDirection:
             json['qcfScrollDirection']?.toString() ?? 'Vertical',
       );
