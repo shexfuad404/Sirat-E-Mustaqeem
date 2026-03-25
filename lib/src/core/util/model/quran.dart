@@ -176,6 +176,12 @@ class Qurans {
     return _qurans.where((Quran quran) => quran.surahId == surahId).toList();
   }
 
+  List<int> getAyatIdsBySurah(int surahId) {
+    final items = getQuransBySurah(surahId)
+      ..sort((a, b) => a.ayatId.compareTo(b.ayatId));
+    return items.map((e) => e.ayatId).toList(growable: false);
+  }
+
   List<Quran> getQuransByJuz(int id) {
     return _qurans.where((Quran quran) => quran.paraId == id).toList();
   }

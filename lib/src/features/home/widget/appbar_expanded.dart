@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:sirat_e_mustaqeem/src/core/util/controller/date_controller.dart';
 import 'package:sirat_e_mustaqeem/src/features/home/widget/address_widget.dart';
 
+import '../../../core/util/bloc/prayer_time_config/prayer_time_config_bloc.dart';
 import '../../../core/util/bloc/theme/theme_bloc.dart';
 import 'kiblat_card.dart';
 
@@ -78,13 +79,17 @@ class AppBarExpanded extends StatelessWidget {
                 //         fontFamily: GoogleFonts.tajawal().fontFamily,
                 //       ),
                 // ),
-                Text(
-                  '${getIslamicDate()} - ${getTodayDate()}',
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 18.sp,
-                      ),
+                BlocBuilder<PrayerTimeConfigBloc, PrayerTimeConfigState>(
+                  builder: (context, prayerConfig) {
+                    return Text(
+                      '${getIslamicDate(adjustmentDays: prayerConfig.hijriAdjustmentDays)} - ${getTodayDate()}',
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                          ),
+                    );
+                  },
                 ),
                 Text(
                   DateFormat('hh:mm a').format(DateTime.now()),
