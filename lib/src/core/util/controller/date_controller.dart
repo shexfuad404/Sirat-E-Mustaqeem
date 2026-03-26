@@ -9,6 +9,11 @@ String getTodayDate() {
 }
 
 /// function to get the islamic date,
-String getIslamicDate() {
-  return HijriCalendarConfig.now().toFormat("dd MMMM, yyyy");
+String getIslamicDate({int adjustmentDays = 0}) {
+  try {
+    final date = DateTime.now().add(Duration(days: adjustmentDays));
+    return HijriCalendarConfig.fromGregorian(date).toFormat("dd MMMM, yyyy");
+  } catch (_) {
+    return HijriCalendarConfig.now().toFormat("dd MMMM, yyyy");
+  }
 }

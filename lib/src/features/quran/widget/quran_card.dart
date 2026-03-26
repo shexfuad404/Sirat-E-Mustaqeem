@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:qcf_quran/qcf_quran.dart';
 
 import '../../../core/util/bloc/quran/quran_bloc.dart';
+import '../../../core/util/bloc/quran_audio/quran_audio_bloc.dart';
 import '../../../core/util/constants.dart';
 import '../../../core/util/model/quran.dart';
 import '../../bookmark/bloc/category_bloc.dart';
@@ -41,32 +42,95 @@ class QuranCard extends StatelessWidget {
         final int? verseNumberOverrideForQcf =
             resolvedQcfVerseNumber ?? qcfVerseNumberOverride;
 
+        final audioState = context.watch<QuranAudioBloc>().state;
+        final isCurrentAyah = audioState.currentAyatId == quran.ayatId;
+        final isPlayingThisAyah =
+            isCurrentAyah && audioState.status == QuranAudioStatus.playing;
+        final isLoadingThisAyah =
+            isCurrentAyah && audioState.status == QuranAudioStatus.loading;
+
         return Container(
           padding: kPagePadding,
+          decoration: BoxDecoration(
+            color: isCurrentAyah && audioState.isActive
+                ? Theme.of(context).primaryColor.withValues(alpha: 0.08)
+                : null,
+            borderRadius: BorderRadius.circular(12.r),
+          ),
           child: Row(
             children: [
-              GestureDetector(
-                onTap: () async {
-                  await toggleQuranFavorite(context, quran);
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onTap: () async {
+                      await toggleQuranFavorite(context, quran);
 
-                  if (bookmarkScreen) {
-                    await Future.delayed(Duration.zero);
+                      if (bookmarkScreen) {
+                        await Future.delayed(Duration.zero);
 
-                    BlocProvider.of<CategoryBloc>(context).add(
-                      UpdateFavoriteItem(
-                        qurans:
-                            BlocProvider.of<QuranBloc>(context).state.qurans,
+                        BlocProvider.of<CategoryBloc>(context).add(
+                          UpdateFavoriteItem(
+                            qurans:
+                                BlocProvider.of<QuranBloc>(context).state.qurans,
+                          ),
+                        );
+                      }
+                    },
+                    child: SvgPicture.asset(
+                      quran.favorite == 0
+                          ? 'assets/images/navigation_icon/svg/bookmark_nfill.svg'
+                          : 'assets/images/navigation_icon/svg/bookmark_fill.svg',
+                      color: Theme.of(context).primaryColor,
+                      width: 24.w,
+                    ),
+                  ),
+                  SizedBox(height: 12.h),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(999),
+                    onTap: () {
+                      final bloc = BlocProvider.of<QuranAudioBloc>(context);
+                      bloc.add(
+                        ToggleAyahPlayPause(
+                          ayatId: quran.ayatId,
+                          surahId: quran.surahId,
+                        ),
+                      );
+
+                      final msg = bloc.state.errorMessage;
+                      if (msg != null && msg.isNotEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(msg)),
+                        );
+                        bloc.add(const ClearAudioError());
+                      }
+                    },
+                    child: Container(
+                      width: 34.w,
+                      height: 34.w,
+                      decoration: BoxDecoration(
+                        color:
+                            Theme.of(context).primaryColor.withValues(alpha: 0.12),
+                        shape: BoxShape.circle,
                       ),
-                    );
-                  }
-                },
-                child: SvgPicture.asset(
-                  quran.favorite == 0
-                      ? 'assets/images/navigation_icon/svg/bookmark_nfill.svg'
-                      : 'assets/images/navigation_icon/svg/bookmark_fill.svg',
-                  color: Theme.of(context).primaryColor,
-                  width: 24.w,
-                ),
+                      alignment: Alignment.center,
+                      child: isLoadingThisAyah
+                          ? SizedBox(
+                              width: 16.w,
+                              height: 16.w,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.2,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            )
+                          : Icon(
+                              isPlayingThisAyah ? Icons.pause : Icons.play_arrow,
+                              color: Theme.of(context).primaryColor,
+                              size: 20.sp,
+                            ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
                 width: 16.w,

@@ -28,6 +28,13 @@ final List<GeneralOption> generalOptions = [
     subtitle: 'Customize Quran font, translation mode and styling.',
   ),
   GeneralOption(
+    imagePath: 'assets/images/home_icon/svg/fajr.svg',
+    onTap: null,
+    routeName: RouteGenerator.prayerTimeSettings,
+    title: 'Prayer time settings',
+    subtitle: 'Configure calculation method, school and Hijri adjustment.',
+  ),
+  GeneralOption(
     imagePath: 'assets/images/setting_icon/svg/thank.svg',
     onTap: null,
     routeName: RouteGenerator.thankyou,

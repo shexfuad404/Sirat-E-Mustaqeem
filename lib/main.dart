@@ -14,7 +14,9 @@ import 'src/core/util/bloc/juz/juz_bloc.dart';
 import 'src/core/util/bloc/location/location_bloc.dart';
 import 'src/core/util/bloc/notification/notification_bloc.dart';
 import 'src/core/util/bloc/prayer_timing_bloc/timing_bloc.dart';
+import 'src/core/util/bloc/prayer_time_config/prayer_time_config_bloc.dart';
 import 'src/core/util/bloc/quran/quran_bloc.dart';
+import 'src/core/util/bloc/quran_audio/quran_audio_bloc.dart';
 import 'src/core/util/bloc/surah/surah_bloc.dart';
 import 'src/core/util/bloc/tasbih/tasbih_bloc.dart';
 import 'src/core/util/bloc/theme/theme_bloc.dart';
@@ -57,6 +59,9 @@ class MyApp extends StatelessWidget {
           create: (context) => TimingBloc(),
         ),
         BlocProvider(
+          create: (context) => PrayerTimeConfigBloc(),
+        ),
+        BlocProvider(
           create: (context) => AllahNameBloc(),
         ),
         BlocProvider(
@@ -64,6 +69,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => QuranBloc(),
+        ),
+        BlocProvider(
+          create: (context) => QuranAudioBloc(),
         ),
         BlocProvider(
           create: (context) => SurahBloc(),

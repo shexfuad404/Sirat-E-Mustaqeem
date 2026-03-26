@@ -9,6 +9,7 @@ import '../src/features/error/screen/database_error_screen.dart';
 import '../src/features/permission/screen/location_permission_screen.dart';
 import '../src/features/permission/screen/notification_permission_screen.dart';
 import '../src/features/prayer_timing/screen/prayer_timing_screen.dart';
+import '../src/features/prayer_timing/screen/prayer_time_settings_screen.dart';
 import '../src/features/qibla/screen/qibla_screen.dart';
 import '../src/features/quran/screen/option_screen.dart';
 import '../src/features/quran/screen/quran_screen.dart';
@@ -20,6 +21,7 @@ class RouteGenerator {
   static const String splash = '/';
   static const String tabScreen = '/tab';
   static const String prayerTimingPage = '/prayer_timing';
+  static const String prayerTimeSettings = '/prayer_time_settings';
   static const String qibla = '/qibla';
   static const String thankyou = '/thank_you';
   static const String download = '/download';
@@ -42,6 +44,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const TabScreen());
       case prayerTimingPage:
         return MaterialPageRoute(builder: (_) => const PrayerTimingScreen());
+      case prayerTimeSettings:
+        return MaterialPageRoute(builder: (_) => const PrayerTimeSettingsScreen());
       case qibla:
         return MaterialPageRoute(builder: (_) => const QiblaScreen());
       case thankyou:

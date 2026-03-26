@@ -11,6 +11,7 @@ import '../bloc/selected_surah/selected_surah_bloc.dart';
 import '../cubit/quran_cubit.dart' as qc;
 import '../cubit/quran_reading_cubit.dart';
 import '../widget/juz_content.dart';
+import '../widget/quran_audio_mini_player.dart';
 import '../widget/surah_content.dart';
 import 'option_screen.dart';
 
@@ -25,6 +26,10 @@ class SelectedQuranScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final int? surahId = surah
+        ? BlocProvider.of<SelectedSurahBloc>(context).state.surah.id
+        : null;
+
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       appBar: AppBar(
@@ -84,7 +89,7 @@ class SelectedQuranScreen extends StatelessWidget {
 
           final axis = isQcfHorizontal ? Axis.horizontal : Axis.vertical;
 
-          return surah
+          final content = surah
               ? SurahContent(
                   scrollDirection: axis,
                   initialAyatId: initialAyatId,
@@ -107,6 +112,25 @@ class SelectedQuranScreen extends StatelessWidget {
                         .saveJuzReading(juzId: juzId, ayatId: ayatId);
                   },
                 );
+
+          if (!surah || surahId == null) {
+            return content;
+          }
+
+          return Stack(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(bottom: 86.h),
+                child: content,
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: QuranAudioMiniPlayer(surahId: surahId),
+              ),
+            ],
+          );
         },
       ),
     );
