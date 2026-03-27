@@ -1,16 +1,13 @@
 import 'dart:io';
 
 import 'package:dartz/dartz.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../../features/download/bloc/percent/percent_bloc.dart';
 import '../error/error_code.dart';
 import '../error/exceptions.dart';
 import '../error/failures.dart';
-import '../network/network_client.dart';
 import '../util/constants.dart';
 import '../util/model/dua.dart';
 import '../util/model/quran.dart';
@@ -18,6 +15,37 @@ import '../util/model/tasbih.dart';
 import 'database_table.dart';
 
 class DatabaseService {
+  static const String _bundledDbAssetPath = 'assets/latest.db';
+
+  Future<void> ensureBundledDatabaseIsReady() async {
+    final databasesPath = await getDatabasesPath();
+    final targetPath = '$databasesPath/$DATABASE_FILE';
+
+    final assetData = await rootBundle.load(_bundledDbAssetPath);
+    final assetBytes = assetData.buffer.asUint8List();
+    final assetLength = assetBytes.length;
+
+    final targetFile = File(targetPath);
+    if (!await targetFile.exists()) {
+      await targetFile.writeAsBytes(assetBytes, flush: true);
+      return;
+    }
+
+    final targetLength = await targetFile.length();
+    if (targetLength == assetLength) {
+      return;
+    }
+
+    final preserved = await _readQuranFavouritesSafe(targetPath);
+    await targetFile.delete();
+    await targetFile.writeAsBytes(assetBytes, flush: true);
+
+    final db = await openDatabase(targetPath);
+    await _ensureQuranFavoritesTable(db);
+    await _restoreQuranFavouritesSafe(db, preserved);
+    await db.close();
+  }
+
   Future<bool> checkIfDatabaseExist() async {
     final databasesPath = await getDatabasesPath();
     final pathName = '$databasesPath/$DATABASE_FILE';
@@ -28,6 +56,7 @@ class DatabaseService {
   Future<Either<LocalFailure, Database>> initService(
       BuildContext context) async {
     try {
+      await ensureBundledDatabaseIsReady();
       final databasesPath = await getDatabasesPath();
       final pathName = '$databasesPath/$DATABASE_FILE';
 
@@ -66,6 +95,43 @@ class DatabaseService {
     ''');
   }
 
+  Future<List<Map<String, Object?>>> _readQuranFavouritesSafe(
+      String dbPath) async {
+    try {
+      final db = await openDatabase(dbPath);
+      await _ensureQuranFavoritesTable(db);
+      final rows = await db.query(
+        'quran_favourites',
+        columns: ['ayat_id', 'created_at'],
+        orderBy: 'datetime(created_at) DESC, id DESC',
+      );
+      await db.close();
+      return rows;
+    } catch (_) {
+      return const [];
+    }
+  }
+
+  Future<void> _restoreQuranFavouritesSafe(
+    Database db,
+    List<Map<String, Object?>> rows,
+  ) async {
+    if (rows.isEmpty) return;
+    for (final row in rows) {
+      final ayatId = int.tryParse(row['ayat_id']?.toString() ?? '');
+      final createdAt = row['created_at']?.toString();
+      if (ayatId == null || createdAt == null || createdAt.isEmpty) continue;
+      await db.insert(
+        'quran_favourites',
+        {
+          'ayat_id': ayatId,
+          'created_at': createdAt,
+        },
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
+    }
+  }
+
   Future<List<Map<String, Object?>>> splitQuranQuery(Database db) async {
     final List<Map<String, Object?>> finalQurans = [];
 
@@ -77,70 +143,6 @@ class DatabaseService {
     }
 
     return finalQurans;
-  }
-
-  Future<Either<Failure, Database>> downloadDatabase(
-      BuildContext context) async {
-    final databasesPath = await getDatabasesPath();
-    final pathName = '$databasesPath/$DATABASE_FILE';
-
-    try {
-      final response = await NetworkClient(DATABASE_URL).download(
-        'siratemustaqeem-db.db',
-        pathName,
-        (received, total) {
-          if (total != -1) {
-            final progress = received / total * 100;
-            BlocProvider.of<PercentBloc>(context).add(
-              UpdatePercent(progress),
-            );
-          }
-        },
-      );
-
-      if (response.statusCode == 200) {
-        var result = await initService(context);
-
-        LocalFailure? localFailure;
-        Database? database;
-
-        result.fold(
-          (l) => localFailure = l,
-          (r) => database = r,
-        );
-
-        if (localFailure != null) {
-          return Left(localFailure!);
-        }
-        return Right(database!);
-      } else {
-        return Left(
-          RemoteFailure(
-              message: response.statusCode,
-              errorType: DioExceptionType.badResponse),
-        );
-      }
-    } on RemoteException catch (e) {
-      String? errorMessage = e.dioError.name;
-      int? errorCode;
-
-      for (final error in RemoteErrorCode.remoteErrors) {
-        if (e.dioError.name.contains(error['rawMessage'].toString())) {
-          errorMessage = error['message'].toString();
-          errorCode = error['errorCode'] as int;
-        }
-      }
-
-      print(errorMessage);
-
-      return Left(
-        RemoteFailure(
-          message: errorMessage,
-          errorType: DioExceptionType.badResponse,
-          errorCode: errorCode,
-        ),
-      );
-    }
   }
 
   Future<List<Map<String, Object?>>> toggleTasbihFavorite(

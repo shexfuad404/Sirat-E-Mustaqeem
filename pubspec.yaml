@@ -41,6 +41,7 @@ dependencies:
   just_audio: ^0.9.40
   connectivity_plus: ^6.1.5
   audio_session: ^0.1.25
+  video_player: ^2.10.0
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +51,7 @@ flutter:
   uses-material-design: true
   # To add assets to your application, add an assets section, like this:
   assets:
+    - assets/latest.db
     - assets/images/core/json/
     - assets/images/core/svg/
     - assets/images/error/lottie_json/
