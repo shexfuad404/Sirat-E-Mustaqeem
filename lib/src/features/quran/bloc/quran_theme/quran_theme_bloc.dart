@@ -42,12 +42,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
             quranType: 'Normal',
             showTranslation: true,
             translationMode: 'English (Clear Quran)',
-            withArabs: true,
             quranFontSize: 24,
             quranFontFamily: 'Uthman',
             translationFontSize: 16,
             translationFontFamily: 'Poppins',
             qcfScrollDirection: 'Vertical',
+            audioEdition: 'ar.alafasy',
+            audioBitrate: 128,
           ),
         ) {
     on<QuranThemeEvent>((event, emit) async {
@@ -56,12 +57,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: event.type,
           showTranslation: state.showTranslation,
           translationMode: state.translationMode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize,
           quranFontFamily: event.type == 'QCF' ? 'qcf' : 'Uthman',
           translationFontSize: state.translationFontSize,
           translationFontFamily: state.translationFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
       if (event is ShowTranslation) {
@@ -69,12 +71,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: state.quranType,
           showTranslation: event.show,
           translationMode: state.translationMode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize,
           translationFontFamily: state.translationFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
       if (event is SwitchTranslationMode) {
@@ -82,25 +85,41 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: state.quranType,
           showTranslation: state.showTranslation,
           translationMode: event.mode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize,
           translationFontFamily: _defaultTranslationFontForMode(event.mode),
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
-      if (event is ShowWithArab) {
+      if (event is SetAudioEdition) {
         emit(QuranThemeState(
           quranType: state.quranType,
           showTranslation: state.showTranslation,
           translationMode: state.translationMode,
-          withArabs: event.show,
           quranFontSize: state.quranFontSize,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize,
           translationFontFamily: state.translationFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: event.edition,
+          audioBitrate: state.audioBitrate,
+        ));
+      }
+      if (event is SetAudioBitrate) {
+        emit(QuranThemeState(
+          quranType: state.quranType,
+          showTranslation: state.showTranslation,
+          translationMode: state.translationMode,
+          quranFontSize: state.quranFontSize,
+          quranFontFamily: state.quranFontFamily,
+          translationFontSize: state.translationFontSize,
+          translationFontFamily: state.translationFontFamily,
+          qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: event.bitrate,
         ));
       }
       if (event is AddQuranFontSize) {
@@ -108,12 +127,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: state.quranType,
           showTranslation: state.showTranslation,
           translationMode: state.translationMode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize + 1,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize,
           translationFontFamily: state.translationFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
       if (event is ReduceQuranFontSize) {
@@ -121,12 +141,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: state.quranType,
           showTranslation: state.showTranslation,
           translationMode: state.translationMode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize - 1,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize,
           translationFontFamily: state.translationFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
       if (event is SetQuranFontFamily) {
@@ -134,12 +155,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: state.quranType,
           showTranslation: state.showTranslation,
           translationMode: state.translationMode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize,
           quranFontFamily: event.family,
           translationFontSize: state.translationFontSize,
           translationFontFamily: state.translationFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
       if (event is AddTranslationFontSize) {
@@ -147,12 +169,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: state.quranType,
           showTranslation: state.showTranslation,
           translationMode: state.translationMode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize + 1,
           translationFontFamily: state.translationFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
       if (event is ReduceTranslationFontSize) {
@@ -160,12 +183,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: state.quranType,
           showTranslation: state.showTranslation,
           translationMode: state.translationMode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize - 1,
           translationFontFamily: state.translationFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
       if (event is SetTranslationFontFamily) {
@@ -176,12 +200,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: state.quranType,
           showTranslation: state.showTranslation,
           translationMode: state.translationMode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize,
           translationFontFamily: safeFontFamily,
           qcfScrollDirection: state.qcfScrollDirection,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
       if (event is SetQcfScrollDirection) {
@@ -189,12 +214,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
           quranType: state.quranType,
           showTranslation: state.showTranslation,
           translationMode: state.translationMode,
-          withArabs: state.withArabs,
           quranFontSize: state.quranFontSize,
           quranFontFamily: state.quranFontFamily,
           translationFontSize: state.translationFontSize,
           translationFontFamily: state.translationFontFamily,
           qcfScrollDirection: event.direction,
+          audioEdition: state.audioEdition,
+          audioBitrate: state.audioBitrate,
         ));
       }
     });
@@ -219,13 +245,14 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
         quranType: json['quranType']?.toString() ?? 'Normal',
         showTranslation: json['showTranslation'] as bool,
         translationMode: mode,
-        withArabs: json['withArabs'] as bool,
         quranFontSize: json['quranFontSize'] as double,
         quranFontFamily: json['quranFontFamily'].toString(),
         translationFontSize: json['translationFontSize'] as double,
         translationFontFamily: safeFamily,
         qcfScrollDirection:
             json['qcfScrollDirection']?.toString() ?? 'Vertical',
+        audioEdition: json['audioEdition']?.toString() ?? 'ar.alafasy',
+        audioBitrate: (json['audioBitrate'] as int?) ?? 128,
       );
     } catch (e) {
       return null;
@@ -239,12 +266,13 @@ class QuranThemeBloc extends HydratedBloc<QuranThemeEvent, QuranThemeState> {
         'showTranslation': state.showTranslation,
         'quranType': state.quranType,
         'translationMode': state.translationMode,
-        'withArabs': state.withArabs,
         'quranFontSize': state.quranFontSize,
         'quranFontFamily': state.quranFontFamily,
         'translationFontSize': state.translationFontSize,
         'translationFontFamily': state.translationFontFamily,
         'qcfScrollDirection': state.qcfScrollDirection,
+        'audioEdition': state.audioEdition,
+        'audioBitrate': state.audioBitrate,
       };
     } catch (e) {
       return null;

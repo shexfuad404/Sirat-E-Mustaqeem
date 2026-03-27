@@ -4,7 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 const String PRAYER_TIMING_URL = 'https://api.aladhan.com/v1/timings/';
 
 const String DATABASE_FILE = 'siratemustaqeem-db.db';
-const String DATABASE_URL = 'https://d1ajw81suztgw2.cloudfront.net/';
 
 const String PLAY_STORE_URL =
     'https://play.google.com/store/apps/details?id=com.devtechnologies.siratemustaqeem';

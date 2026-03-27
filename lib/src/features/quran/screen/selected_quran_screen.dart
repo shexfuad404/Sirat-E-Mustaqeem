@@ -14,6 +14,7 @@ import '../widget/juz_content.dart';
 import '../widget/quran_audio_mini_player.dart';
 import '../widget/surah_content.dart';
 import 'option_screen.dart';
+import '../../../core/util/bloc/quran_audio/quran_audio_bloc.dart';
 
 class SelectedQuranScreen extends StatelessWidget {
   const SelectedQuranScreen({
@@ -36,7 +37,10 @@ class SelectedQuranScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).primaryColor,
         elevation: 0,
         leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            BlocProvider.of<QuranAudioBloc>(context).add(const StopAudio());
+            Navigator.of(context).pop();
+          },
           icon: Icon(
             Icons.arrow_back_ios,
             color: Colors.white,

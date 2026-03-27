@@ -31,13 +31,20 @@ class SwitchTranslationMode extends QuranThemeEvent {
   List<Object> get props => [mode];
 }
 
-class ShowWithArab extends QuranThemeEvent {
-  final bool show;
-
-  ShowWithArab(this.show);
+class SetAudioEdition extends QuranThemeEvent {
+  final String edition;
+  const SetAudioEdition(this.edition);
 
   @override
-  List<Object> get props => [show];
+  List<Object> get props => [edition];
+}
+
+class SetAudioBitrate extends QuranThemeEvent {
+  final int bitrate;
+  const SetAudioBitrate(this.bitrate);
+
+  @override
+  List<Object> get props => [bitrate];
 }
 
 class AddQuranFontSize extends QuranThemeEvent {

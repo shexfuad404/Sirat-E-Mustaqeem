@@ -45,6 +45,11 @@ List<Collection> collections = [
     RouteGenerator.qibla,
   ),
   Collection(
+    'assets/images/collection_icon/svg/qaabah.svg',
+    'Live TV',
+    RouteGenerator.liveTv,
+  ),
+  Collection(
     'assets/images/collection_icon/svg/other.svg',
     'Others',
     'Coming Soon',

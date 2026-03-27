@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/util/bloc/quran/quran_bloc.dart';
 import '../../../core/util/bloc/quran_audio/quran_audio_bloc.dart';
 import '../../../core/util/constants.dart';
+import '../bloc/quran_theme/quran_theme_bloc.dart';
 
 class QuranAudioMiniPlayer extends StatelessWidget {
   const QuranAudioMiniPlayer({
@@ -75,10 +76,18 @@ class QuranAudioMiniPlayer extends StatelessWidget {
                   onPressed: () {
                     final bloc = BlocProvider.of<QuranAudioBloc>(context);
                     if (!isActive) {
+                      final theme = BlocProvider.of<QuranThemeBloc>(context).state;
                       final ayatIds =
                           BlocProvider.of<QuranBloc>(context).state.qurans
                               .getAyatIdsBySurah(surahId);
-                      bloc.add(PlaySurah(surahId: surahId, ayatIds: ayatIds));
+                      bloc.add(
+                        PlaySurah(
+                          surahId: surahId,
+                          ayatIds: ayatIds,
+                          edition: theme.audioEdition,
+                          bitrate: theme.audioBitrate,
+                        ),
+                      );
                     } else {
                       bloc.add(const TogglePlayPause());
                     }

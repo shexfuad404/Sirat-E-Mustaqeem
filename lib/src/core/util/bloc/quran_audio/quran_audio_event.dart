@@ -9,28 +9,49 @@ abstract class QuranAudioEvent extends Equatable {
 class PlayAyah extends QuranAudioEvent {
   final int ayatId;
   final int surahId;
-  const PlayAyah({required this.ayatId, required this.surahId});
+  final String edition;
+  final int bitrate;
+  const PlayAyah({
+    required this.ayatId,
+    required this.surahId,
+    required this.edition,
+    required this.bitrate,
+  });
 
   @override
-  List<Object> get props => [ayatId, surahId];
+  List<Object> get props => [ayatId, surahId, edition, bitrate];
 }
 
 class ToggleAyahPlayPause extends QuranAudioEvent {
   final int ayatId;
   final int surahId;
-  const ToggleAyahPlayPause({required this.ayatId, required this.surahId});
+  final String edition;
+  final int bitrate;
+  const ToggleAyahPlayPause({
+    required this.ayatId,
+    required this.surahId,
+    required this.edition,
+    required this.bitrate,
+  });
 
   @override
-  List<Object> get props => [ayatId, surahId];
+  List<Object> get props => [ayatId, surahId, edition, bitrate];
 }
 
 class PlaySurah extends QuranAudioEvent {
   final int surahId;
   final List<int> ayatIds;
-  const PlaySurah({required this.surahId, required this.ayatIds});
+  final String edition;
+  final int bitrate;
+  const PlaySurah({
+    required this.surahId,
+    required this.ayatIds,
+    required this.edition,
+    required this.bitrate,
+  });
 
   @override
-  List<Object> get props => [surahId, ayatIds];
+  List<Object> get props => [surahId, ayatIds, edition, bitrate];
 }
 
 class TogglePlayPause extends QuranAudioEvent {

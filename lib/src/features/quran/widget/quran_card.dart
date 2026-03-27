@@ -94,6 +94,8 @@ class QuranCard extends StatelessWidget {
                         ToggleAyahPlayPause(
                           ayatId: quran.ayatId,
                           surahId: quran.surahId,
+                          edition: state.audioEdition,
+                          bitrate: state.audioBitrate,
                         ),
                       );
 
@@ -153,7 +155,7 @@ class QuranCard extends StatelessWidget {
                     children: [
                       _QuranArabicText(
                         quran: quran,
-                        withArabs: state.withArabs,
+                        withArabs: true,
                         selectedFontFamily: state.quranFontFamily,
                         fontSize: state.quranFontSize,
                         qcfVerseNumberOverride: verseNumberOverrideForQcf,

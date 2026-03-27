@@ -36,6 +36,13 @@ const List<String> _translationGoogleFonts = [
   'Lato',
   'Montserrat',
 ];
+const List<String> _audioEditions = [
+  'ar.alafasy',
+  'ar.abdurrahmaansudais',
+  'ar.husary',
+  'ar.minshawi',
+];
+const List<int> _audioBitrates = [192, 128, 64, 48, 40, 32];
 
 class OptionScreen extends StatelessWidget {
   const OptionScreen();
@@ -46,7 +53,8 @@ class OptionScreen extends StatelessWidget {
       if (state.quranType == 'QCF') const QcfScrollDirectionOption(),
       const ShowTranslationOption(),
       const TranslationMode(),
-      const WithArabs(),
+      const AudioEditionOption(),
+      const AudioBitrateOption(),
       if (state.quranType != 'QCF') const QuranFontSize(),
       if (state.quranType != 'QCF') const QuranFontFamily(),
       const TranslationFontSize(),
@@ -90,6 +98,52 @@ class OptionScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class AudioEditionOption extends StatelessWidget {
+  const AudioEditionOption();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<QuranThemeBloc, QuranThemeState>(
+      builder: (context, state) {
+        final value =
+            _audioEditions.contains(state.audioEdition) ? state.audioEdition : _audioEditions.first;
+        return BottomSheetSelect<String>(
+          label: 'Audio reciter',
+          value: value,
+          options: _audioEditions,
+          onChanged: (edition) {
+            BlocProvider.of<QuranThemeBloc>(context).add(SetAudioEdition(edition));
+          },
+        );
+      },
+    );
+  }
+}
+
+class AudioBitrateOption extends StatelessWidget {
+  const AudioBitrateOption();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<QuranThemeBloc, QuranThemeState>(
+      builder: (context, state) {
+        final value =
+            _audioBitrates.contains(state.audioBitrate) ? state.audioBitrate : _audioBitrates[1];
+        return BottomSheetSelect<int>(
+          label: 'Audio quality',
+          value: value,
+          options: _audioBitrates,
+          optionLabelBuilder: (v) => '${v}kbps',
+          onChanged: (bitrate) {
+            BlocProvider.of<QuranThemeBloc>(context)
+                .add(SetAudioBitrate(bitrate));
+          },
+        );
+      },
     );
   }
 }
@@ -145,40 +199,6 @@ class TranslationMode extends StatelessWidget {
           },
         );
       },
-    );
-  }
-}
-
-class WithArabs extends StatelessWidget {
-  const WithArabs();
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0.h),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            'With Arabs',
-            style: Theme.of(context)
-                .textTheme
-                .titleLarge!
-                .copyWith(color: Theme.of(context).primaryColor),
-          ),
-          BlocBuilder<QuranThemeBloc, QuranThemeState>(
-            builder: (context, state) {
-              return CustomSwitch(
-                  value: state.withArabs,
-                  onChanged: (val) {
-                    BlocProvider.of<QuranThemeBloc>(context).add(
-                      ShowWithArab(val),
-                    );
-                  });
-            },
-          ),
-        ],
-      ),
     );
   }
 }

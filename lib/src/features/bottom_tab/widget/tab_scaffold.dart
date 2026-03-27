@@ -5,6 +5,7 @@ import '../../../core/util/bloc/location/location_bloc.dart';
 import '../../../core/util/bloc/notification/notification_bloc.dart';
 import '../../../core/util/bloc/prayer_time_config/prayer_time_config_bloc.dart';
 import '../../../core/util/bloc/prayer_timing_bloc/timing_bloc.dart';
+import '../../../core/util/bloc/quran_audio/quran_audio_bloc.dart';
 import '../../../core/util/constants.dart';
 import '../../utils/loading_widget.dart';
 import '../bloc/tab/tab_bloc.dart';
@@ -62,14 +63,23 @@ class _TabScaffoldState extends State<TabScaffold> {
                 Theme.of(context).appBarTheme.systemOverlayStyle,
           ),
           bottomNavigationBar: SiratNavigationBar(),
-          body: BlocBuilder<TabBloc, TabState>(
-            builder: (context, state) {
-              return AnimatedSwitcher(
-                duration: kAnimationDuration,
-                switchInCurve: kAnimationCurve,
-                child: state.screen,
-              );
+          body: BlocListener<TabBloc, TabState>(
+            listenWhen: (previous, current) => previous.index != current.index,
+            listener: (context, tabState) {
+              if (tabState.index != 2) {
+                BlocProvider.of<QuranAudioBloc>(context)
+                    .add(const StopAudio());
+              }
             },
+            child: BlocBuilder<TabBloc, TabState>(
+              builder: (context, state) {
+                return AnimatedSwitcher(
+                  duration: kAnimationDuration,
+                  switchInCurve: kAnimationCurve,
+                  child: state.screen,
+                );
+              },
+            ),
           ),
         );
       },

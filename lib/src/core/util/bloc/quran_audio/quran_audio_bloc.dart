@@ -45,9 +45,6 @@ class QuranAudioBloc extends HydratedBloc<QuranAudioEvent, QuranAudioState> {
     });
   }
 
-  static const String defaultEdition = 'ar.alafasy';
-  static const int defaultBitrate = 128;
-
   final AudioPlayer _player;
   StreamSubscription<int?>? _indexSub;
   StreamSubscription<PlayerState>? _stateSub;
@@ -88,8 +85,8 @@ class QuranAudioBloc extends HydratedBloc<QuranAudioEvent, QuranAudioState> {
 
   Uri _ayahAudioUri({
     required int ayatId,
-    String edition = defaultEdition,
-    int bitrate = defaultBitrate,
+    required String edition,
+    required int bitrate,
   }) {
     return Uri.parse(
       'https://cdn.islamic.network/quran/audio/$bitrate/$edition/$ayatId.mp3',
@@ -115,7 +112,13 @@ class QuranAudioBloc extends HydratedBloc<QuranAudioEvent, QuranAudioState> {
     }
 
     try {
-      await _player.setUrl(_ayahAudioUri(ayatId: event.ayatId).toString());
+      await _player.setUrl(
+        _ayahAudioUri(
+          ayatId: event.ayatId,
+          edition: event.edition,
+          bitrate: event.bitrate,
+        ).toString(),
+      );
       await _player.play();
     } catch (e) {
       emit(state.copyWith(
@@ -146,7 +149,12 @@ class QuranAudioBloc extends HydratedBloc<QuranAudioEvent, QuranAudioState> {
       return;
     }
 
-    add(PlayAyah(ayatId: event.ayatId, surahId: event.surahId));
+    add(PlayAyah(
+      ayatId: event.ayatId,
+      surahId: event.surahId,
+      edition: event.edition,
+      bitrate: event.bitrate,
+    ));
   }
 
   Future<void> _handlePlaySurah(PlaySurah event, Emitter<QuranAudioState> emit) async {
@@ -169,7 +177,11 @@ class QuranAudioBloc extends HydratedBloc<QuranAudioEvent, QuranAudioState> {
 
     try {
       final sources = event.ayatIds
-          .map((id) => AudioSource.uri(_ayahAudioUri(ayatId: id)))
+          .map((id) => AudioSource.uri(_ayahAudioUri(
+                ayatId: id,
+                edition: event.edition,
+                bitrate: event.bitrate,
+              )))
           .toList();
       final playlist = ConcatenatingAudioSource(children: sources);
       await _player.setAudioSource(playlist, initialIndex: 0);
