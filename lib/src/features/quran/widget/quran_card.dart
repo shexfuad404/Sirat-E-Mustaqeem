@@ -7,11 +7,16 @@ import 'package:qcf_quran/qcf_quran.dart';
 
 import '../../../core/util/bloc/quran/quran_bloc.dart';
 import '../../../core/util/bloc/quran_audio/quran_audio_bloc.dart';
+import '../../../core/util/bloc/surah/surah_bloc.dart';
 import '../../../core/util/constants.dart';
 import '../../../core/util/model/quran.dart';
 import '../../bookmark/bloc/category_bloc.dart';
 import '../bloc/quran_theme/quran_theme_bloc.dart';
+import '../bloc/selected_surah/selected_surah_bloc.dart';
 import '../controller/quran_controller.dart';
+import '../cubit/quran_cubit.dart';
+import '../cubit/quran_reading_cubit.dart';
+import '../screen/selected_quran_screen.dart';
 
 class QuranCard extends StatelessWidget {
   const QuranCard(
@@ -138,50 +143,16 @@ class QuranCard extends StatelessWidget {
                 width: 16.w,
               ),
               Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 16.h,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(
-                        color: Theme.of(context).colorScheme.surface,
-                        width: 2.sp,
-                      ),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      _QuranArabicText(
-                        quran: quran,
-                        withArabs: true,
-                        selectedFontFamily: state.quranFontFamily,
-                        fontSize: state.quranFontSize,
-                        qcfVerseNumberOverride: verseNumberOverrideForQcf,
-                      ),
-                      SizedBox(
-                        height: 8.h,
-                      ),
-                      if (state.showTranslation)
-                        Text(
-                          quran.getTranslationText(
-                            state.translationMode,
-                            verseNumberOverride: verseNumberOverrideForQcf,
-                          ),
-                          textAlign: TextAlign.end,
-                          style: _translationTextStyle(
-                            context: context,
-                            translationMode: state.translationMode,
-                            translationFontFamily: state.translationFontFamily,
-                            fontSize: state.translationFontSize,
-                          ),
-                        ),
-                      SizedBox(
-                        height: 8.h,
-                      ),
-                    ],
-                  ),
+                child: _BookmarkAyahBody(
+                  bookmarkScreen: bookmarkScreen,
+                  quran: quran,
+                  showTranslation: state.showTranslation,
+                  translationMode: state.translationMode,
+                  translationFontFamily: state.translationFontFamily,
+                  translationFontSize: state.translationFontSize,
+                  quranFontFamily: state.quranFontFamily,
+                  quranFontSize: state.quranFontSize,
+                  qcfVerseNumberOverride: verseNumberOverrideForQcf,
                 ),
               ),
             ],
@@ -243,6 +214,128 @@ int? _resolveValidQcfVerseNumber({
   }
 
   return null;
+}
+
+void _openQuranReaderAtBookmarkedAyah(BuildContext context, Quran quran) {
+  final surahs = BlocProvider.of<SurahBloc>(context).state.surahs;
+  final index = surahs.surahs.indexWhere((s) => s.id == quran.surahId);
+  if (index < 0) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Could not open this verse in the Quran.')),
+    );
+    return;
+  }
+
+  QuranReadingCubit? readingCubit;
+  try {
+    readingCubit = BlocProvider.of<QuranReadingCubit>(context);
+  } catch (_) {
+    readingCubit = null;
+  }
+
+  Navigator.of(context).push<void>(
+    MaterialPageRoute<void>(
+      builder: (context) => BlocProvider(
+        create: (_) => SelectedSurahBloc(surahs, index),
+        child: BlocProvider(
+          create: (_) => QuranCubit(true),
+          child: readingCubit != null
+              ? BlocProvider<QuranReadingCubit>.value(
+                  value: readingCubit,
+                  child: SelectedQuranScreen(
+                    surah: true,
+                    initialAyatId: quran.ayatId,
+                  ),
+                )
+              : BlocProvider(
+                  create: (_) => QuranReadingCubit(),
+                  child: SelectedQuranScreen(
+                    surah: true,
+                    initialAyatId: quran.ayatId,
+                  ),
+                ),
+        ),
+      ),
+    ),
+  );
+}
+
+class _BookmarkAyahBody extends StatelessWidget {
+  const _BookmarkAyahBody({
+    required this.bookmarkScreen,
+    required this.quran,
+    required this.showTranslation,
+    required this.translationMode,
+    required this.translationFontFamily,
+    required this.translationFontSize,
+    required this.quranFontFamily,
+    required this.quranFontSize,
+    this.qcfVerseNumberOverride,
+  });
+
+  final bool bookmarkScreen;
+  final Quran quran;
+  final bool showTranslation;
+  final String translationMode;
+  final String translationFontFamily;
+  final double translationFontSize;
+  final String quranFontFamily;
+  final double quranFontSize;
+  final int? qcfVerseNumberOverride;
+
+  @override
+  Widget build(BuildContext context) {
+    final content = Container(
+      padding: EdgeInsets.symmetric(vertical: 16.h),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).colorScheme.surface,
+            width: 2.sp,
+          ),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          _QuranArabicText(
+            quran: quran,
+            withArabs: true,
+            selectedFontFamily: quranFontFamily,
+            fontSize: quranFontSize,
+            qcfVerseNumberOverride: qcfVerseNumberOverride,
+          ),
+          SizedBox(height: 8.h),
+          if (showTranslation)
+            Text(
+              quran.getTranslationText(
+                translationMode,
+                verseNumberOverride: qcfVerseNumberOverride,
+              ),
+              textAlign: TextAlign.end,
+              style: _translationTextStyle(
+                context: context,
+                translationMode: translationMode,
+                translationFontFamily: translationFontFamily,
+                fontSize: translationFontSize,
+              ),
+            ),
+          SizedBox(height: 8.h),
+        ],
+      ),
+    );
+
+    if (!bookmarkScreen) return content;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () => _openQuranReaderAtBookmarkedAyah(context, quran),
+        borderRadius: BorderRadius.circular(12.r),
+        child: content,
+      ),
+    );
+  }
 }
 
 class _QuranArabicText extends StatelessWidget {

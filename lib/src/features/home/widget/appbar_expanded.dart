@@ -58,28 +58,7 @@ class AppBarExpanded extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // SvgPicture.asset(
-                //   'assets/images/home_icon/svg/logo.svg',
-                //   width: 100.w,
-                // ),
-                // SvgPicture.asset(
-                //   "assets/images/dua_icon/svg/bismillah.svg",
-                //   width: 150.w,
-                //   colorFilter: ColorFilter.mode(
-                //     Colors.white,
-                //     BlendMode.srcIn,
-                //   ),
-                // ),
-                // Basmallah(),
-                // Text(
-                //   'السَّلاَمُ عَلَيْكُمْ وَرَحْمَةُ اللهِ وَبَرَكَاتُهُ',
-                //   style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                //         fontWeight: FontWeight.bold,
-                //         color: Colors.white,
-                //         fontSize: 20.sp,
-                //         fontFamily: GoogleFonts.tajawal().fontFamily,
-                //       ),
-                // ),
+                const AddressWidget(),
                 BlocBuilder<PrayerTimeConfigBloc, PrayerTimeConfigState>(
                   builder: (context, prayerConfig) {
                     return Text(
@@ -102,7 +81,6 @@ class AppBarExpanded extends StatelessWidget {
                 ),
                 SizedBox(height: 6.h),
                 const UpcomingPrayerText(),
-                AddressWidget(),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     horizontal: 16.w,

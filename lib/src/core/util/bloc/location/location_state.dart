@@ -20,7 +20,7 @@ class LocationInitial extends LocationState {
       : super(failure: failure, geometry: geometry);
 
   @override
-  List<Object> get props => [latitude, longitude, geometry!];
+  List<Object?> get props => [latitude, longitude, geometry];
 }
 
 class LocationLoading extends LocationState {
@@ -41,7 +41,7 @@ class LocationSuccess extends LocationState {
   }) : super(geometry: geometry);
 
   @override
-  List<Object> get props => [latitude, longitude, geometry!, placemark!];
+  List<Object?> get props => [latitude, longitude, geometry, placemark];
 }
 
 class LocationFailed extends LocationState {
@@ -49,5 +49,5 @@ class LocationFailed extends LocationState {
       : super(failure: failure);
 
   @override
-  List<Object> get props => [latitude, longitude];
+  List<Object?> get props => [latitude, longitude, failure];
 }
