@@ -34,6 +34,84 @@ class _SurahContentState extends State<SurahContent> {
   int? _lastInitAyatId;
   Axis? _lastInitAxis;
 
+  double? _averageItemExtentFromScrollMetrics() {
+    if (!_scrollController.hasClients) return null;
+    if (_sorted.length <= 1) return null;
+
+    final max = _scrollController.position.maxScrollExtent;
+    if (max <= 0) return null;
+
+    return max / (_sorted.length - 1);
+  }
+
+  Future<void> _scrollToAyahId(int ayatId) async {
+    if (!mounted || _sorted.isEmpty) return;
+
+    final targetIndex = _sorted.indexWhere((e) => e.ayatId == ayatId);
+    if (targetIndex < 0) return;
+
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+
+    if (!mounted || !_scrollController.hasClients) return;
+
+    double lowOffset = _scrollController.position.minScrollExtent;
+    double highOffset = _scrollController.position.maxScrollExtent;
+
+    for (int attempt = 0; attempt < 30; attempt++) {
+      if (!mounted) return;
+
+      final ctx = _itemKeys[ayatId]?.currentContext;
+      if (ctx != null) {
+        await Scrollable.ensureVisible(
+          ctx,
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          alignment: 0.1,
+        );
+        return;
+      }
+
+      if (!_scrollController.hasClients) {
+        await Future<void>.delayed(const Duration(milliseconds: 16));
+        continue;
+      }
+
+      int? firstVisibleIndex;
+      int? lastVisibleIndex;
+
+      for (int i = 0; i < _sorted.length; i++) {
+        final key = _itemKeys[_sorted[i].ayatId];
+        if (key?.currentContext != null) {
+          firstVisibleIndex ??= i;
+          lastVisibleIndex = i;
+        }
+      }
+
+      if (firstVisibleIndex != null && lastVisibleIndex != null) {
+        if (targetIndex < firstVisibleIndex) {
+          highOffset = _scrollController.offset;
+          final newOffset = (lowOffset + highOffset) / 2;
+          _scrollController.jumpTo(newOffset);
+        } else if (targetIndex > lastVisibleIndex) {
+          lowOffset = _scrollController.offset;
+          final newOffset = (lowOffset + highOffset) / 2;
+          _scrollController.jumpTo(newOffset);
+        }
+      } else {
+        _estimatedItemExtent ??= _measureFirstItemExtent();
+        final avg = _averageItemExtentFromScrollMetrics();
+        final extent =
+            (avg != null && avg > 0) ? avg : (_estimatedItemExtent ?? 200.0);
+
+        final targetOffset = targetIndex * extent;
+        final clamped = targetOffset.clamp(lowOffset, highOffset);
+        _scrollController.jumpTo(clamped);
+      }
+
+      await Future<void>.delayed(const Duration(milliseconds: 32));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -53,31 +131,13 @@ class _SurahContentState extends State<SurahContent> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (_sorted.isEmpty) return;
 
-      _estimatedItemExtent ??= _measureFirstItemExtent();
-
       final initialFromWidget = widget.initialAyatId;
       final initialId = initialFromWidget != null &&
               _sorted.any((e) => e.ayatId == initialFromWidget)
           ? initialFromWidget
           : _sorted.first.ayatId;
 
-      final initialIndex = _sorted.indexWhere((e) => e.ayatId == initialId);
-      if (initialIndex >= 0 &&
-          _estimatedItemExtent != null &&
-          _estimatedItemExtent! > 0 &&
-          _scrollController.hasClients) {
-        final targetOffset = initialIndex * _estimatedItemExtent!;
-        final clamped = targetOffset.clamp(
-          _scrollController.position.minScrollExtent,
-          _scrollController.position.maxScrollExtent,
-        );
-
-        await _scrollController.animateTo(
-          clamped,
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.easeInOut,
-        );
-      }
+      await _scrollToAyahId(initialId);
 
       if (_lastSavedAyatId != initialId) {
         _lastSavedAyatId = initialId;
@@ -149,6 +209,9 @@ class _SurahContentState extends State<SurahContent> {
               ..sort((a, b) => a.ayatId.compareTo(b.ayatId));
 
             _sorted = sorted;
+            for (final q in sorted) {
+              _itemKeys.putIfAbsent(q.ayatId, () => GlobalKey());
+            }
             _maybeInitOnce(currentSurahState.surah.id);
 
             return SafeArea(
