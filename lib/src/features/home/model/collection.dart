@@ -30,6 +30,11 @@ List<Collection> collections = [
     RouteGenerator.tasbih,
   ),
   Collection(
+    'assets/images/collection_icon/svg/other.svg',
+    'Azkars',
+    RouteGenerator.azkar,
+  ),
+  Collection(
     'assets/images/collection_icon/svg/allah.svg',
     '99 Names of Allah',
     RouteGenerator.allahName,
@@ -43,6 +48,11 @@ List<Collection> collections = [
     'assets/images/collection_icon/svg/kiblat.svg',
     'Qabah Direction',
     RouteGenerator.qibla,
+  ),
+  Collection(
+    'assets/images/collection_icon/svg/qaabah.svg',
+    'Live TV',
+    RouteGenerator.liveTv,
   ),
   Collection(
     'assets/images/collection_icon/svg/other.svg',

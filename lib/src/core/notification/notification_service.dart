@@ -52,7 +52,7 @@ class NotificationService {
       requestAlertPermission: false,
       requestBadgePermission: false,
       requestSoundPermission: false,
-      onDidReceiveLocalNotification: _onDidReceiveLocalNotification,
+      // onDidReceiveLocalNotification: _onDidReceiveLocalNotification,
     );
 
     final InitializationSettings initializationSettings =
@@ -63,7 +63,7 @@ class NotificationService {
     /// [onSelectNotification] handler for clicking notification while in
     /// app ios<10+
     await flutterLocalNotificationsPlugin.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       // onDidReceiveBackgroundNotificationResponse: _onSelectNotification,
     );
 
@@ -72,27 +72,27 @@ class NotificationService {
 
   /// add notification to the stream so other page can subscribe it
   /// and get the notification
-  Future _onDidReceiveLocalNotification(
-    int id,
-    String? title,
-    String? body,
-    String? payload,
-  ) async {
-    didReceiveLocalNotificationSubject.add(
-      ReceivedNotification(
-        id: id,
-        title: title,
-        body: body,
-        payload: payload,
-      ),
-    );
-  }
+  // Future _onDidReceiveLocalNotification(
+  //   int id,
+  //   String? title,
+  //   String? body,
+  //   String? payload,
+  // ) async {
+  //   didReceiveLocalNotificationSubject.add(
+  //     ReceivedNotification(
+  //       id: id,
+  //       title: title,
+  //       body: body,
+  //       payload: payload,
+  //     ),
+  //   );
+  // }
 
   /// add notification to the stream so other page can subscribe it
   /// and get the notification
-  Future _onSelectNotification(String? payload) async {
-    selectNotificationSubject.add(payload);
-  }
+  // Future _onSelectNotification(String? payload) async {
+  //   selectNotificationSubject.add(payload);
+  // }
 
   Future<void> _configureLocalTimeZone() async {
     tz.initializeTimeZones();
@@ -141,11 +141,16 @@ class NotificationService {
     );
 
     /// scheduled notification function
-    await flutterLocalNotificationsPlugin.zonedSchedule(id, title, body,
-        tz.TZDateTime.now(tz.local).add(duration), platformChannelSpecifics,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        androidAllowWhileIdle: true,
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        id: id,
+        title: title,
+        body: body,
+      scheduledDate:   tz.TZDateTime.now(tz.local).add(duration),
+        notificationDetails: platformChannelSpecifics,
+        // uiLocalNotificationDateInterpretation:
+        //     UILocalNotificationDateInterpretation.absoluteTime,
+        // androidAllowWhileIdle: true,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time,
         payload: '');
   }

@@ -69,8 +69,15 @@ class TimingController {
 }
 
 /// function to call api and get prayer timings
-getPrayerTiming(double latitude, double longitude,
-    {forTomorrow = false}) async {
+Future<Either<Failure, Timing>> getPrayerTiming(
+  double latitude,
+  double longitude, {
+  bool forTomorrow = false,
+  required int method,
+  required int school,
+  required int dayOffset,
+  required int hijriAdjustmentDays,
+}) async {
   /// initiate apiservice class to perform get request to get prayer timing
   ApiService apiService =
       ApiService(networkClient: NetworkClient(PRAYER_TIMING_URL));
@@ -79,53 +86,47 @@ getPrayerTiming(double latitude, double longitude,
   Map<String, Object> params = {
     'latitude': latitude,
     'longitude': longitude,
-    'method': 1,
+    'method': method,
+    'school': school,
+    'adjustment': hijriAdjustmentDays,
   };
 
   /// current date for getting praying timing from api
-  int timestamp = ((DateTime.now().millisecondsSinceEpoch) / 1000).floor();
+  final baseDate = DateTime.now().add(
+    Duration(
+      days: dayOffset + (forTomorrow ? 1 : 0),
+    ),
+  );
 
-  if (forTomorrow) {
-    final newDate = DateTime.now().add(
-      Duration(
-        days: 1,
-      ),
-    );
-
-    timestamp = ((DateTime(
-              newDate.year,
-              newDate.month,
-              newDate.day,
-            ).millisecondsSinceEpoch) /
-            1000)
-        .floor();
-  }
+  final timestamp = ((DateTime(
+            baseDate.year,
+            baseDate.month,
+            baseDate.day,
+          ).millisecondsSinceEpoch) /
+          1000)
+      .floor();
 
   try {
-    /// returned response from the api
-    Response timingResponse =
+    final Response timingResponse =
         await apiService.getPrayerTiming(timestamp, params);
 
-    /// case response is ok: [Timing] class is returned for the presentation layer.
     if (timingResponse.statusCode == 200) {
-      final Timing timing = Timing.fromJson(
-        timingResponse.data,
+      return Right(
+        Timing.fromJson(timingResponse.data as Map<String, dynamic>),
       );
-
-      return timing;
     }
 
-    /// otherwise [Failure] is returned
-    else {
-      return RemoteFailure(
-          message: timingResponse.statusCode,
-          errorType: DioErrorType.badResponse);
-    }
+    return Left(
+      RemoteFailure(
+        message: 'Server error (${timingResponse.statusCode})',
+        errorType: DioExceptionType.badResponse,
+      ),
+    );
   } on RemoteException catch (e) {
-    String? errorMessage = e.dioError.message;
+    String errorMessage = e.dioError.name;
     int? errorCode;
     for (final error in RemoteErrorCode.remoteErrors) {
-      if (e.dioError.message!.contains(error['rawMessage'].toString())) {
+      if (e.dioError.name.contains(error['rawMessage'].toString())) {
         errorMessage = error['message'].toString();
         errorCode = error['errorCode'] as int;
       }
@@ -133,8 +134,23 @@ getPrayerTiming(double latitude, double longitude,
     return Left(
       RemoteFailure(
         message: errorMessage,
-        errorType: DioErrorType.badResponse,
+        errorType: e.dioError,
         errorCode: errorCode,
+      ),
+    );
+  } on DioException catch (e) {
+    return Left(
+      RemoteFailure(
+        message:
+            'Connection failed. Please check your internet and try again.',
+        errorType: e.type,
+      ),
+    );
+  } catch (_) {
+    return Left(
+      RemoteFailure(
+        message: 'Unable to load prayer times.',
+        errorType: DioExceptionType.unknown,
       ),
     );
   }

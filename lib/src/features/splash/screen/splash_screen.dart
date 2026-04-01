@@ -12,9 +12,11 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    checkDatabaseAvailability(context);
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkDatabaseAvailability(context);
+    });
   }
 
   @override

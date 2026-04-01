@@ -64,7 +64,11 @@ class _TabScreenState extends State<TabScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeDependencies() {
-    BlocProvider.of<LocationBloc>(context).add(InitLocation());
+    final locationState = BlocProvider.of<LocationBloc>(context).state;
+    if (locationState is! LocationSuccess &&
+        locationState is! LocationLoading) {
+      BlocProvider.of<LocationBloc>(context).add(InitLocation());
+    }
 
     super.didChangeDependencies();
   }
@@ -77,13 +81,8 @@ class _TabScreenState extends State<TabScreen> with WidgetsBindingObserver {
           return Scaffold(
             body: LoadingWidget(),
           );
-        } else if (state is LocationSuccess) {
-          return TabScaffold();
-        } else {
-          return Scaffold(
-            body: LoadingWidget(),
-          );
         }
+        return TabScaffold();
       },
     );
   }

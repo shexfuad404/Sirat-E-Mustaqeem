@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:muslim_data_flutter/muslim_data_flutter.dart';
 
-import '../../../core/util/model/allah_name.dart';
-import '../bloc/name_bloc.dart';
 import '../screen/name_screen.dart';
 
 class NameCard extends StatelessWidget {
   const NameCard(this.name);
 
-  final AllahName name;
+  final NameOfAllah name;
 
   @override
   Widget build(BuildContext context) {
@@ -17,10 +15,7 @@ class NameCard extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => NameBloc(name),
-              child: NameScreen(),
-            ),
+            builder: (context) => NameScreen(name),
           ),
         );
       },
@@ -38,7 +33,7 @@ class NameCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          name.english,
+                          name.transliteration,
                           style:
                               Theme.of(context).textTheme.titleLarge!.copyWith(
                                     color: Theme.of(context).primaryColor,
@@ -49,14 +44,14 @@ class NameCard extends StatelessWidget {
                           height: 4.h,
                         ),
                         Text(
-                          name.englishMeaning,
+                          name.translation,
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ],
                     ),
                   ),
                   Text(
-                    name.arabic,
+                    name.name,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.bold,

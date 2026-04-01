@@ -13,7 +13,7 @@ class SetLocation extends LocationEvent {
   final double latitude;
   final double longitude;
 
-  SetLocation(this.latitude, this.longitude);
+  const SetLocation(this.latitude, this.longitude);
 
   @override
   List<Object> get props => [latitude, longitude];

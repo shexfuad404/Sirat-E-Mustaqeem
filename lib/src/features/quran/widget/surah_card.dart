@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/util/constants.dart';
 import '../../../core/util/model/surah.dart';
 import '../bloc/selected_surah/selected_surah_bloc.dart';
+import '../cubit/quran_reading_cubit.dart';
 import '../cubit/quran_cubit.dart';
 import '../screen/selected_quran_screen.dart';
 
@@ -17,6 +18,12 @@ class SurahCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool fromNav = BlocProvider.of<QuranCubit>(context).state.fromNav;
+    QuranReadingCubit? readingCubit;
+    try {
+      readingCubit = BlocProvider.of<QuranReadingCubit>(context);
+    } catch (_) {
+      readingCubit = null;
+    }
 
     return GestureDetector(
       onTap: () {
@@ -26,7 +33,15 @@ class SurahCard extends StatelessWidget {
               create: (context) => SelectedSurahBloc(surahs, index),
               child: BlocProvider(
                 create: (context) => QuranCubit(fromNav),
-                child: SelectedQuranScreen(surah: true),
+                child: readingCubit != null
+                    ? BlocProvider.value(
+                        value: readingCubit,
+                        child: const SelectedQuranScreen(surah: true),
+                      )
+                    : BlocProvider(
+                        create: (context) => QuranReadingCubit(),
+                        child: const SelectedQuranScreen(surah: true),
+                      ),
               ),
             ),
           ),
@@ -36,15 +51,23 @@ class SurahCard extends StatelessWidget {
         padding: EdgeInsets.only(
           left: 16.w,
         ),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Theme.of(context).colorScheme.surface,
+              width: 1.sp,
+            ),
+          ),
+        ),
         child: Row(
           children: [
             Container(
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
-                  borderRadius: kCardBorderRadius,
+                  borderRadius: kAppIconBorderRadius,
                 ),
-                color: Theme.of(context).primaryColor.withOpacity(
-                      0.2,
+                color: Theme.of(context).primaryColor.withValues(
+                      alpha: 0.2,
                     ),
               ),
               width: 48.w,
@@ -55,6 +78,7 @@ class SurahCard extends StatelessWidget {
                   '${index + 1}',
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
                       ),
                 ),
               ),
@@ -63,17 +87,9 @@ class SurahCard extends StatelessWidget {
               width: 16.w,
             ),
             Expanded(
-              child: Container(
+              child: Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: 16.h,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).colorScheme.background,
-                      width: 2.sp,
-                    ),
-                  ),
+                  vertical: 12.h,
                 ),
                 child: Row(
                   children: [
@@ -101,9 +117,10 @@ class SurahCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      surahs.surahs[index].nameAr,
+                      '${index + 1}',
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            fontFamily: 'Uthman',
+                            fontFamily: 'arsura',
+                            fontSize: 30.sp,
                           ),
                     ),
                     SizedBox(

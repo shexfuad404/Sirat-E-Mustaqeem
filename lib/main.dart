@@ -14,19 +14,26 @@ import 'src/core/util/bloc/juz/juz_bloc.dart';
 import 'src/core/util/bloc/location/location_bloc.dart';
 import 'src/core/util/bloc/notification/notification_bloc.dart';
 import 'src/core/util/bloc/prayer_timing_bloc/timing_bloc.dart';
+import 'src/core/util/bloc/prayer_time_config/prayer_time_config_bloc.dart';
 import 'src/core/util/bloc/quran/quran_bloc.dart';
+import 'src/core/util/bloc/quran_audio/quran_audio_bloc.dart';
 import 'src/core/util/bloc/surah/surah_bloc.dart';
 import 'src/core/util/bloc/tasbih/tasbih_bloc.dart';
 import 'src/core/util/bloc/theme/theme_bloc.dart';
 import 'src/core/util/bloc/time_format/time_format_bloc.dart';
 import 'src/features/bottom_tab/bloc/tab/tab_bloc.dart';
 import 'src/features/quran/bloc/quran_theme/quran_theme_bloc.dart';
+import 'src/features/splash/screen/splash_screen.dart';
+
+final GlobalKey<NavigatorState> appNavigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await NotificationService().init();
   HydratedBloc.storage = await HydratedStorage.build(
-    storageDirectory: await getApplicationDocumentsDirectory(),
+    storageDirectory: HydratedStorageDirectory(
+        (await getApplicationDocumentsDirectory()).path),
   );
   runApp(MyApp());
 }
@@ -52,6 +59,9 @@ class MyApp extends StatelessWidget {
           create: (context) => TimingBloc(),
         ),
         BlocProvider(
+          create: (context) => PrayerTimeConfigBloc(),
+        ),
+        BlocProvider(
           create: (context) => AllahNameBloc(),
         ),
         BlocProvider(
@@ -59,6 +69,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => QuranBloc(),
+        ),
+        BlocProvider(
+          create: (context) => QuranAudioBloc(),
         ),
         BlocProvider(
           create: (context) => SurahBloc(),
@@ -79,38 +92,24 @@ class MyApp extends StatelessWidget {
           create: (context) => LocationBloc(),
         ),
       ],
-      child: FutureBuilder<void>(
-          future: SystemChrome.setPreferredOrientations(
-            [
-              DeviceOrientation.portraitUp,
-            ],
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done)
-              return ScreenUtilInit(
-                designSize: Size(414, 896),
-                builder: (context, child) {
-                  return BlocBuilder<ThemeBloc, ThemeState>(
-                    builder: (context, state) {
-                      return MaterialApp(
-                        title: 'Sirate Mustaqeem',
-                        debugShowCheckedModeBanner: false,
-                        color: Colors.white,
-                        theme: state.currentTheme,
-                        initialRoute: RouteGenerator.splash,
-                        onGenerateRoute: RouteGenerator.generateRoute,
-                      );
-                    },
-                  );
-                },
+      child: ScreenUtilInit(
+        designSize: Size(414, 896),
+        builder: (context, child) {
+          return BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, state) {
+              return MaterialApp(
+                title: 'Sirate Mustaqeem',
+                debugShowCheckedModeBanner: false,
+                color: Colors.white,
+                theme: state.currentTheme,
+                navigatorKey: appNavigatorKey,
+                home: const SplashScreen(),
+                onGenerateRoute: RouteGenerator.generateRoute,
               );
-            return MaterialApp(
-              title: 'Sirate Mustaqeem',
-              debugShowCheckedModeBanner: false,
-              color: Colors.white,
-              home: Container(),
-            );
-          }),
+            },
+          );
+        },
+      ),
     );
   }
 }

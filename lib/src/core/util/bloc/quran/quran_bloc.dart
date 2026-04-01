@@ -10,15 +10,18 @@ class QuranBloc extends Bloc<QuranEvent, QuranState> {
   QuranBloc() : super(QuranState(Qurans())) {
     on<QuranEvent>((event, emit) async {
       if (event is FetchQuran) {
-        state.qurans.initializeData(event.datas);
+        state.qurans.initializeFromPackage();
+        final syncedQurans = state.qurans.withFavoriteAyatIds(
+          event.favoriteAyatIds,
+        );
 
-        emit(QuranState(state.qurans));
+        emit(QuranState(syncedQurans));
       }
-      if (event is UpdateQuran) {
-        final newQurans = Qurans();
-        newQurans.initializeData(event.datas);
+      if (event is SyncQuranFavorites) {
+        final updatedQurans =
+            state.qurans.withFavoriteAyatIds(event.favoriteAyatIds);
 
-        emit(QuranState(newQurans));
+        emit(QuranState(updatedQurans));
       }
     });
   }

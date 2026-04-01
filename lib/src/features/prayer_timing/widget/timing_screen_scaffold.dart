@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +18,7 @@ class TimingScreenScaffold extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor:
-            Theme.of(context).appBarTheme.backgroundColor!.withOpacity(0.3),
+            Theme.of(context).appBarTheme.backgroundColor!.withValues(alpha: 0.3),
         elevation: 0,
         title: Text('Prayer Timing'),
       ),

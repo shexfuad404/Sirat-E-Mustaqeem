@@ -2,21 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
 
 import '../../../core/util/constants.dart';
 import '../bloc/appbar_bloc/appbar_bloc.dart';
 import 'appbar_expanded.dart';
 
 class HomeSliverAppbar extends StatelessWidget {
-  const HomeSliverAppbar();
+  const HomeSliverAppbar({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppbarBloc, AppbarState>(
       builder: (context, state) {
+        final brightness = Theme.of(context).brightness;
+        final baseOverlay = brightness == Brightness.dark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark;
+        final collapsedColor = Theme.of(context).scaffoldBackgroundColor;
+        final overlay = baseOverlay.copyWith(
+          statusBarColor:
+              state.displayAppbar ? collapsedColor : Colors.transparent,
+          statusBarIconBrightness: brightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark,
+          statusBarBrightness: brightness == Brightness.dark
+              ? Brightness.dark
+              : Brightness.light,
+        );
+
         return SliverAppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          systemOverlayStyle: Theme.of(context).appBarTheme.systemOverlayStyle,
+          systemOverlayStyle: overlay,
           centerTitle: false,
           titleSpacing: 16.w,
           title: AnimatedSwitcher(
@@ -39,14 +56,17 @@ class HomeSliverAppbar extends StatelessWidget {
                   child: SvgPicture.asset(
                     'assets/images/home_icon/svg/noti.svg',
                     width: 24.w,
-                    color: Theme.of(context).textTheme.bodyMedium!.color,
+                    colorFilter: ColorFilter.mode(
+                      Theme.of(context).textTheme.bodyMedium!.color!,
+                      BlendMode.srcIn,
+                    ),
                   ),
                 ),
               ),
           ],
           toolbarHeight: 50,
           collapsedHeight: 50,
-          expandedHeight: 0.35.sh,
+          expandedHeight: 0.30.sh,
           elevation: 0,
           pinned: true,
           floating: false,

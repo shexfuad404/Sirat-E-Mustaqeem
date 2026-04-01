@@ -12,6 +12,11 @@ class AllahNameScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AllahNameBloc, AllahNameState>(
       builder: (context, state) {
+        if (state.allahNames.isEmpty) {
+          BlocProvider.of<AllahNameBloc>(context).add(
+            FetchAllahName(),
+          );
+        }
         return Scaffold(
           appBar: AppBar(
             title: Text('99 Allah Names'),
@@ -20,9 +25,9 @@ class AllahNameScreen extends StatelessWidget {
             child: Padding(
               padding: kPagePadding,
               child: ListView.builder(
-                itemCount: state.allahNames.allahNames.length,
+                itemCount: state.allahNames.length,
                 itemBuilder: (context, index) => NameCard(
-                  state.allahNames.allahNames[index],
+                  state.allahNames[index],
                 ),
               ),
             ),

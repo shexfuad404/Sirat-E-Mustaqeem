@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/util/constants.dart';
 import '../../../core/util/model/juz.dart';
 import '../bloc/selected_juz/selected_juz_bloc.dart';
+import '../cubit/quran_reading_cubit.dart';
 import '../cubit/quran_cubit.dart';
 import '../screen/selected_quran_screen.dart';
 
@@ -17,6 +18,12 @@ class JuzCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool fromNav = BlocProvider.of<QuranCubit>(context).state.fromNav;
+    QuranReadingCubit? readingCubit;
+    try {
+      readingCubit = BlocProvider.of<QuranReadingCubit>(context);
+    } catch (_) {
+      readingCubit = null;
+    }
 
     return GestureDetector(
       onTap: () {
@@ -26,9 +33,15 @@ class JuzCard extends StatelessWidget {
               create: (context) => SelectedJuzBloc(juzs, index),
               child: BlocProvider(
                 create: (context) => QuranCubit(fromNav),
-                child: SelectedQuranScreen(
-                  surah: false,
-                ),
+                child: readingCubit != null
+                    ? BlocProvider.value(
+                        value: readingCubit,
+                        child: const SelectedQuranScreen(surah: false),
+                      )
+                    : BlocProvider(
+                        create: (context) => QuranReadingCubit(),
+                        child: const SelectedQuranScreen(surah: false),
+                      ),
               ),
             ),
           ),
@@ -38,15 +51,23 @@ class JuzCard extends StatelessWidget {
         padding: EdgeInsets.only(
           left: 16.w,
         ),
+        decoration: BoxDecoration(
+          border: Border(
+            bottom: BorderSide(
+              color: Theme.of(context).colorScheme.surface,
+              width: 1.sp,
+            ),
+          ),
+        ),
         child: Row(
           children: [
             Container(
               decoration: ShapeDecoration(
                 shape: RoundedRectangleBorder(
-                  borderRadius: kCardBorderRadius,
+                  borderRadius: kAppIconBorderRadius,
                 ),
-                color: Theme.of(context).primaryColor.withOpacity(
-                      0.2,
+                color: Theme.of(context).primaryColor.withValues(
+                      alpha: 0.2,
                     ),
               ),
               width: 48.w,
@@ -57,6 +78,7 @@ class JuzCard extends StatelessWidget {
                   '${index + 1}',
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
                       ),
                 ),
               ),
@@ -68,14 +90,6 @@ class JuzCard extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(
                   vertical: 16.h,
-                ),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).colorScheme.background,
-                      width: 2.sp,
-                    ),
-                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

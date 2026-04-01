@@ -4,6 +4,15 @@ abstract class QuranThemeEvent extends Equatable {
   const QuranThemeEvent();
 }
 
+class SetQuranType extends QuranThemeEvent {
+  final String type;
+
+  SetQuranType(this.type);
+
+  @override
+  List<Object> get props => [type];
+}
+
 class ShowTranslation extends QuranThemeEvent {
   final bool show;
 
@@ -22,13 +31,20 @@ class SwitchTranslationMode extends QuranThemeEvent {
   List<Object> get props => [mode];
 }
 
-class ShowWithArab extends QuranThemeEvent {
-  final bool show;
-
-  ShowWithArab(this.show);
+class SetAudioEdition extends QuranThemeEvent {
+  final String edition;
+  const SetAudioEdition(this.edition);
 
   @override
-  List<Object> get props => [show];
+  List<Object> get props => [edition];
+}
+
+class SetAudioBitrate extends QuranThemeEvent {
+  final int bitrate;
+  const SetAudioBitrate(this.bitrate);
+
+  @override
+  List<Object> get props => [bitrate];
 }
 
 class AddQuranFontSize extends QuranThemeEvent {
@@ -75,4 +91,13 @@ class SetTranslationFontFamily extends QuranThemeEvent {
 
   @override
   List<Object> get props => [family];
+}
+
+class SetQcfScrollDirection extends QuranThemeEvent {
+  final String direction;
+
+  SetQcfScrollDirection(this.direction);
+
+  @override
+  List<Object> get props => [direction];
 }

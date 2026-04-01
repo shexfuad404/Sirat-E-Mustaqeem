@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/tab/tab_bloc.dart';
 import '../cubit/quran_cubit.dart';
+import '../cubit/quran_reading_cubit.dart';
 import '../widget/quran_scaffold.dart';
 
 class QuranScreen extends StatefulWidget {
@@ -40,6 +41,9 @@ class _QuranScreenState extends State<QuranScreen> {
         ),
         BlocProvider(
           create: (context) => QuranCubit(widget.fromNav),
+        ),
+        BlocProvider(
+          create: (context) => QuranReadingCubit(),
         ),
       ],
       child: QuranScaffold(),

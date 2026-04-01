@@ -5,9 +5,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../routes/routes.dart';
 import '../../../core/util/constants.dart';
+import '../../../core/util/widgets/elevated_button.dart';
 
 class NotificationPermissionScreen extends StatelessWidget {
-  const NotificationPermissionScreen();
+  const NotificationPermissionScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +47,7 @@ class NotificationPermissionScreen extends StatelessWidget {
               SizedBox(
                 height: 32.h,
               ),
-              ElevatedButton(
+              CustomElevatedButton(
                 onPressed: () async {
                   if (await Permission.notification.request().isGranted) {
                     Navigator.of(context).pushReplacementNamed(
@@ -58,9 +59,7 @@ class NotificationPermissionScreen extends StatelessWidget {
                     );
                   }
                 },
-                child: Text(
-                  'Sure, I like that',
-                ),
+                text: 'Sure, I like that',
               ),
               SizedBox(
                 height: 8.h,

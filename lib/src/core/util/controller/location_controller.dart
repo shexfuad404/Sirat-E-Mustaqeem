@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
-
 import 'package:geolocator/geolocator.dart';
 
 import '../../error/error_code.dart';
@@ -83,7 +82,10 @@ Future<Either<LocalFailure, Position>> getCurrentPosition() async {
   }
 
   final Position position = await Geolocator.getCurrentPosition(
-    desiredAccuracy: LocationAccuracy.medium,
+    locationSettings: LocationSettings(
+      accuracy: LocationAccuracy.medium,
+      distanceFilter: 100,
+    ),
   );
 
   return Right(position);
@@ -126,14 +128,14 @@ Future<Either<Failure, Geocoding>> getAddress(
       return Left(
         RemoteFailure(
             message: addressResponse.statusCode,
-            errorType: DioErrorType.badResponse),
+            errorType: DioExceptionType.badResponse),
       );
     }
   } on RemoteException catch (e) {
-    String? errorMessage = e.dioError.message;
+    String? errorMessage = e.dioError.name;
     int? errorCode;
     for (final error in RemoteErrorCode.remoteErrors) {
-      if (e.dioError.message!.contains(error['rawMessage'].toString())) {
+      if (e.dioError.name.contains(error['rawMessage'].toString())) {
         errorMessage = error['message'].toString();
         errorCode = error['errorCode'] as int;
       }
@@ -141,7 +143,7 @@ Future<Either<Failure, Geocoding>> getAddress(
     return Left(
       RemoteFailure(
         message: errorMessage,
-        errorType: DioErrorType.badResponse,
+        errorType: DioExceptionType.badResponse,
         errorCode: errorCode,
       ),
     );

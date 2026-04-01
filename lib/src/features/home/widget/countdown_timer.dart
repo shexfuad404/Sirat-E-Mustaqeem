@@ -1,83 +1,52 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../../core/util/bloc/location/location_bloc.dart';
-import '../../../core/util/bloc/notification/notification_bloc.dart';
-import '../../../core/util/bloc/prayer_timing_bloc/timing_bloc.dart';
-import '../../../core/util/constants.dart';
-import '../../../core/util/controller/timing_controller.dart';
-import '../bloc/timer_bloc/timer_bloc.dart';
-import '../controller/home_controller.dart';
+import '../../utils/coming_soon_dialog.dart';
+import '../model/collection.dart';
 
-class CountDownTimer extends StatefulWidget {
-  const CountDownTimer(this.controller);
+class CollectionButton extends StatelessWidget {
+  const CollectionButton(this.collection, {super.key});
 
-  final TimingController controller;
-
-  @override
-  State<CountDownTimer> createState() => _CountDownTimerState();
-}
-
-class _CountDownTimerState extends State<CountDownTimer> {
-  late final Timer timer;
-
-  bool isInit = false;
-
-  @override
-  void didChangeDependencies() {
-    if (!isInit) {
-      timer = Timer.periodic(
-        Duration(seconds: 1),
-        (_) {
-          if (BlocProvider.of<TimerBloc>(context).state is TimerLoaded &&
-              BlocProvider.of<TimerBloc>(context).state.difference ==
-                  Duration.zero) {
-            if (widget.controller.timingCount == 4) {
-              BlocProvider.of<TimingBloc>(context).add(
-                RequestTimingForTomorrow(
-                  BlocProvider.of<NotificationBloc>(context).state.status,
-                  BlocProvider.of<LocationBloc>(context).state,
-                ),
-              );
-            } else {
-              BlocProvider.of<TimingBloc>(context).add(UpdateTiming());
-            }
-          }
-          BlocProvider.of<TimerBloc>(context).add(
-            TimerTick(),
-          );
-        },
-      );
-
-      isInit = true;
-    }
-
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    timer.cancel();
-    super.dispose();
-  }
+  final Collection collection;
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TimerBloc, TimerState>(
-      builder: (context, state) {
-        return AnimatedSwitcher(
-          duration: kAnimationDuration,
-          reverseDuration: Duration.zero,
-          switchInCurve: kAnimationCurve,
-          child: !(state is TimerLoaded)
-              ? Container()
-              : Text(
-                  '${convertDurationCountdown(state.difference)} until Adhan',
-                ),
-        );
+    return GestureDetector(
+      onTap: () {
+        if (collection.routeName == 'Coming Soon') {
+          showDialog(
+            context: context,
+            builder: (context) => ComingSoonDialog(),
+          );
+          return;
+        }
+        if (collection.routeName != '') {
+          Navigator.of(context).pushNamed(collection.routeName);
+        }
       },
+      child: Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Theme.of(context).cardColor
+              : Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(10.r),
+        ),
+        width: 64.w,
+        child: Column(
+          children: [
+            SvgPicture.asset(
+              collection.assetName,
+              width: 64.w,
+            ),
+            Text(
+              collection.title,
+              style: Theme.of(context).textTheme.bodyLarge,
+              textAlign: TextAlign.center,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

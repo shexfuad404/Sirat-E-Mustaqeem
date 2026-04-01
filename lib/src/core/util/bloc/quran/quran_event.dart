@@ -5,19 +5,21 @@ abstract class QuranEvent extends Equatable {
 }
 
 class FetchQuran extends QuranEvent {
-  final List<Map<String, Object?>> datas;
+  final List<int> favoriteAyatIds;
 
-  FetchQuran(this.datas);
+  const FetchQuran({
+    this.favoriteAyatIds = const [],
+  });
 
   @override
-  List<Object> get props => [datas];
+  List<Object> get props => [favoriteAyatIds];
 }
 
-class UpdateQuran extends QuranEvent {
-  final List<Map<String, Object?>> datas;
+class SyncQuranFavorites extends QuranEvent {
+  final List<int> favoriteAyatIds;
 
-  const UpdateQuran(this.datas);
+  const SyncQuranFavorites(this.favoriteAyatIds);
 
   @override
-  List<Object> get props => [datas];
+  List<Object> get props => [favoriteAyatIds];
 }

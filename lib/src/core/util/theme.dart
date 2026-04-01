@@ -5,12 +5,14 @@ import 'package:google_fonts/google_fonts.dart';
 
 import 'constants.dart';
 
-enum AppTheme { Dark, Light }
+enum AppTheme { dark, light }
 
 final Map<AppTheme, ThemeData> kAppThemeData = {
-  AppTheme.Dark: ThemeData.dark().copyWith(
+  AppTheme.dark: ThemeData.dark().copyWith(
     primaryColor: kDarkPrimary,
     scaffoldBackgroundColor: kDarkBg,
+    cardColor: kDarkPlaceholderText,
+    dividerTheme: DividerThemeData(color: kDarkPlaceholder),
     textTheme: GoogleFonts.openSansTextTheme(
       TextTheme().copyWith(
         displayLarge: TextStyle(
@@ -48,19 +50,25 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
         ),
       ),
     ),
+    dropdownMenuTheme: DropdownMenuThemeData(
+      textStyle: TextStyle(
+        fontSize: 14.sp,
+        color: kDarkTextColor,
+      ),
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        elevation: MaterialStateProperty.all(0),
-        minimumSize: MaterialStateProperty.all(
+        elevation: WidgetStateProperty.all(0),
+        minimumSize: WidgetStateProperty.all(
           Size(double.infinity, 56.h),
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           const StadiumBorder(),
         ),
-        foregroundColor: MaterialStateProperty.all(
+        foregroundColor: WidgetStateProperty.all(
           kDarkTextColor,
         ),
-        textStyle: MaterialStateProperty.all(
+        textStyle: WidgetStateProperty.all(
           TextStyle(
             fontSize: 16.sp,
             color: kDarkTextColor,
@@ -70,8 +78,8 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: MaterialStateProperty.all(kDarkPrimary),
-        textStyle: MaterialStateProperty.all(
+        foregroundColor: WidgetStateProperty.all(kDarkPrimary),
+        textStyle: WidgetStateProperty.all(
           TextStyle(
             fontSize: 16.sp,
             color: kDarkPrimary,
@@ -86,7 +94,7 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
         color: kDarkPrimary,
         size: 24.sp,
       ),
-      unselectedItemColor: kDarkPlaceholderText,
+      unselectedItemColor: Color(0xFF7A7E88),
       unselectedIconTheme: IconThemeData(
         color: kDarkPlaceholderText,
         size: 24.sp,
@@ -95,6 +103,7 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     appBarTheme: AppBarTheme(
       backgroundColor: kDarkBg,
       elevation: 0,
+      centerTitle: true,
       systemOverlayStyle: SystemUiOverlayStyle.light,
       iconTheme: IconThemeData(
         color: kDarkTextColor,
@@ -107,17 +116,18 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     ),
     colorScheme: ColorScheme.dark()
         .copyWith(
-          background: kDarkPlaceholder,
           surface: kDarkPlaceholderText,
           primary: kDarkPrimary,
           secondary: kDarkAccent,
         )
-        .copyWith(background: kDarkPlaceholder)
+        .copyWith(surface: kDarkPlaceholder)
         .copyWith(error: kDarkError),
   ),
-  AppTheme.Light: ThemeData.light().copyWith(
+  AppTheme.light: ThemeData.light().copyWith(
     primaryColor: kLightPrimary,
     scaffoldBackgroundColor: kLightBg,
+    cardColor: Color(0xFFF8FAF9),
+    dividerTheme: DividerThemeData(color: kLightPlaceholder),
     textTheme: GoogleFonts.openSansTextTheme(
       TextTheme().copyWith(
         displayLarge: TextStyle(
@@ -155,19 +165,27 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
         ),
       ),
     ),
+    dropdownMenuTheme: DropdownMenuThemeData(
+      // dropdownColor: kLightBg,
+      textStyle: TextStyle(
+        fontSize: 14.sp,
+        color: kLightTextColor,
+      ),
+      // iconEnabledColor: kLightTextColor,
+    ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        elevation: MaterialStateProperty.all(5),
-        minimumSize: MaterialStateProperty.all(
+        elevation: WidgetStateProperty.all(5),
+        minimumSize: WidgetStateProperty.all(
           Size(double.infinity, 56.h),
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           const StadiumBorder(),
         ),
-        foregroundColor: MaterialStateProperty.all(
+        foregroundColor: WidgetStateProperty.all(
           kDarkTextColor,
         ),
-        textStyle: MaterialStateProperty.all(
+        textStyle: WidgetStateProperty.all(
           TextStyle(
             fontSize: 16.sp,
             color: kDarkTextColor,
@@ -177,8 +195,8 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     ),
     textButtonTheme: TextButtonThemeData(
       style: ButtonStyle(
-        foregroundColor: MaterialStateProperty.all(kLightPrimary),
-        textStyle: MaterialStateProperty.all(
+        foregroundColor: WidgetStateProperty.all(kLightPrimary),
+        textStyle: WidgetStateProperty.all(
           TextStyle(
             fontSize: 16.sp,
             color: kLightPrimary,
@@ -188,11 +206,14 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     ),
     appBarTheme: AppBarTheme(
       systemOverlayStyle: SystemUiOverlayStyle.dark,
-      backgroundColor: kLightPrimary,
+      elevation: 0,
+      centerTitle: true,
+      scrolledUnderElevation: 0,
+      backgroundColor: kDarkTextColor,
       titleTextStyle: TextStyle(
         fontSize: 16.sp,
         fontWeight: FontWeight.bold,
-        color: kDarkTextColor,
+        color: kLightTextColor,
       ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -210,12 +231,11 @@ final Map<AppTheme, ThemeData> kAppThemeData = {
     ),
     colorScheme: ColorScheme.light()
         .copyWith(
-          background: kLightPlaceholder,
           surface: kLightPlaceholderText,
           primary: kLightPrimary,
           secondary: kLightAccent,
         )
-        .copyWith(background: kLightPlaceholder)
+        .copyWith(surface: kLightPlaceholder)
         .copyWith(error: kLightError),
   )
 };

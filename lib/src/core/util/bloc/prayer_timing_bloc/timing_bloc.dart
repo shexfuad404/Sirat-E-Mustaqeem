@@ -25,42 +25,55 @@ class TimingBloc extends Bloc<TimingEvent, TimingState> {
         if (!(event.locationState is LocationSuccess)) {
           emit(TimingFailed(event.locationState.failure!));
         } else {
-          Timing result = await getPrayerTiming(
+          final result = await getPrayerTiming(
             event.locationState.latitude,
             event.locationState.longitude,
+            method: event.method,
+            school: event.school,
+            dayOffset: event.dayOffset,
+            hijriAdjustmentDays: event.hijriAdjustmentDays,
           );
 
-          emit(TimingLoaded(result));
+          result.fold(
+            (failure) => emit(TimingFailed(failure)),
+            (timing) => emit(TimingLoaded(timing)),
+          );
         }
       } else if (event is RequestTimingForTomorrow) {
         emit(TimingLoading());
 
-        if (event is LocationFailed) {
+        if (!(event.locationState is LocationSuccess)) {
           emit(TimingFailed(event.locationState.failure!));
           return;
-        } else {
-          var result = await getPrayerTiming(
-            event.locationState.latitude,
-            event.locationState.longitude,
-            forTomorrow: true,
-          );
-
-          result.fold((l) async* {
-            emit(TimingFailed(l));
-          }, (r) async* {
-            final controller = TimingController(r.data.timings);
-
-            _notificationList =
-                await loadLocalNotification(controller.timingsList);
-
-            if (event.notificationEnabled == PermissionStatus.granted)
-              await addToLocalNotification(_notificationList);
-
-            _timing = r;
-
-            emit(TimingLoaded(r));
-          });
         }
+
+        final result = await getPrayerTiming(
+          event.locationState.latitude,
+          event.locationState.longitude,
+          forTomorrow: true,
+          method: event.method,
+          school: event.school,
+          dayOffset: event.dayOffset,
+          hijriAdjustmentDays: event.hijriAdjustmentDays,
+        );
+
+        if (result.isLeft()) {
+          emit(TimingFailed(result.fold((l) => l, (r) => throw StateError(''))));
+          return;
+        }
+
+        final timing = result.fold((l) => throw StateError(''), (r) => r);
+        final controller = TimingController(timing.data.timings);
+
+        _notificationList = await loadLocalNotification(controller.timingsList);
+
+        if (event.notificationEnabled == PermissionStatus.granted) {
+          await addToLocalNotification(_notificationList);
+        }
+
+        _timing = timing;
+
+        emit(TimingLoaded(timing));
       }
 
       /// when initialize app and toggle switch

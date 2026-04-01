@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart'
+    show AlignedGridView;
 
 import '../../utils/sirat_card.dart';
 import '../model/collection.dart';
 import 'collection_button.dart';
 
 class CollectionCard extends StatelessWidget {
-  const CollectionCard();
+  const CollectionCard({super.key});
 
   @override
   Widget build(BuildContext context) {
     return SiratCard(
+      margin: EdgeInsets.zero,
+      padding: EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             'Collection',
@@ -23,71 +28,21 @@ class CollectionCard extends StatelessWidget {
           SizedBox(
             height: 16.h,
           ),
-          Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: collections.length >= 4
-                  ? List.generate(
-                      4,
-                      (index) {
-                        return CollectionButton(
-                          collections[index],
-                        );
-                      },
-                    )
-                  : [
-                      ...List.generate(
-                        collections.length,
-                        (index) {
-                          return CollectionButton(
-                            collections[index],
-                          );
-                        },
-                      ),
-                      ...List.generate(
-                        4 - collections.length,
-                        (index) {
-                          return SizedBox(
-                            width: 64.w,
-                          );
-                        },
-                      ),
-                    ]),
-          if (collections.length > 4)
-            SizedBox(
-              height: 16.h,
-            ),
-          if (collections.length > 4)
-            Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: collections.length >= 8
-                    ? List.generate(
-                        4,
-                        (index) {
-                          return CollectionButton(
-                            collections[index + 4],
-                          );
-                        },
-                      )
-                    : [
-                        ...List.generate(
-                          collections.length - 4,
-                          (index) {
-                            return CollectionButton(
-                              collections[index + 4],
-                            );
-                          },
-                        ),
-                        ...List.generate(
-                          8 - collections.length,
-                          (index) {
-                            return SizedBox(
-                              width: 64.w,
-                            );
-                          },
-                        ),
-                      ])
+          AlignedGridView.count(
+            crossAxisCount: 4,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
+            shrinkWrap: true,
+            padding: EdgeInsets.zero,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: collections.length,
+            scrollDirection: Axis.vertical,
+            itemBuilder: (context, index) {
+              return CollectionButton(
+                collections[index],
+              );
+            },
+          ),
         ],
       ),
     );
