@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:lottie/lottie.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../routes/routes.dart';
+import '../../../core/util/bloc/location/location_bloc.dart';
 import '../../../core/util/constants.dart';
 import '../../../core/util/widgets/elevated_button.dart';
 
 class LocationPermissionScreen extends StatelessWidget {
   const LocationPermissionScreen({super.key});
+
+  Future<void> _continue(BuildContext context) async {
+    Navigator.of(context).pushReplacementNamed(
+      RouteGenerator.notificationPermission,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,15 +57,11 @@ class LocationPermissionScreen extends StatelessWidget {
               ),
               CustomElevatedButton(
                 onPressed: () async {
-                  if (await Permission.location.request().isGranted) {
-                    Navigator.of(context).pushReplacementNamed(
-                      RouteGenerator.notificationPermission,
-                    );
-                  } else {
-                    Navigator.of(context).pushReplacementNamed(
-                      RouteGenerator.notificationPermission,
-                    );
+                  final status = await Permission.location.request();
+                  if (status.isGranted) {
+                    BlocProvider.of<LocationBloc>(context).add(InitLocation());
                   }
+                  await _continue(context);
                 },
                 text: 'Sure, I like that',
               ),
@@ -65,10 +69,8 @@ class LocationPermissionScreen extends StatelessWidget {
                 height: 8.h,
               ),
               TextButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacementNamed(
-                    RouteGenerator.notificationPermission,
-                  );
+                onPressed: () async {
+                  await _continue(context);
                 },
                 child: Text(
                   'Not now',

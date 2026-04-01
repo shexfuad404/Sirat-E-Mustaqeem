@@ -5,6 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 
 import '../../../error/failures.dart';
+import '../../controller/location_controller.dart';
 import '../../model/geocoding.dart';
 
 part 'location_event.dart';
@@ -13,8 +14,8 @@ part 'location_state.dart';
 class LocationBloc extends HydratedBloc<LocationEvent, LocationState> {
   LocationBloc()
       : super(LocationInitial(
-            34,
-            123,
+            0,
+            0,
             LocalFailure(
               error: 0,
               message: 'initializing',
@@ -23,23 +24,38 @@ class LocationBloc extends HydratedBloc<LocationEvent, LocationState> {
     on<LocationEvent>((event, emit) async {
       if (event is InitLocation) {
         emit(LocationLoading(state.latitude, state.longitude));
-        // final result = await getCurrentPosition();
-        var placemark =
-            await getAddressFromLatLng(state.latitude, state.longitude);
-        // result.fold(
-        //     (l) => emit(LocationFailed(state.latitude, state.longitude, l)),
-        //     (r) async {
-        //   log('Message: ${r.latitude}, ${r.longitude}');
-        //   final address = await getAddress(r.latitude, r.longitude);
-        //   address.fold(
-        //     (l) => log('Message Error: ${l.message}'),
-        //     (r) {
-        //       log('Message:::: ${r.results?[0].formattedAddress}');
-        //     },
-        //   );
-        emit(LocationSuccess(state.latitude, state.longitude, null,
-            placemark: placemark));
-        // });
+        final result = await getCurrentPosition();
+        await result.fold(
+          (failure) async {
+            emit(LocationFailed(state.latitude, state.longitude, failure));
+          },
+          (position) async {
+            final placemark =
+                await getAddressFromLatLng(position.latitude, position.longitude);
+            emit(
+              LocationSuccess(
+                position.latitude,
+                position.longitude,
+                null,
+                placemark: placemark,
+              ),
+            );
+          },
+        );
+      }
+
+      if (event is SetLocation) {
+        emit(LocationLoading(state.latitude, state.longitude));
+        final placemark =
+            await getAddressFromLatLng(event.latitude, event.longitude);
+        emit(
+          LocationSuccess(
+            event.latitude,
+            event.longitude,
+            null,
+            placemark: placemark,
+          ),
+        );
       }
     });
   }
@@ -61,8 +77,8 @@ class LocationBloc extends HydratedBloc<LocationEvent, LocationState> {
         );
       } else {
         return LocationSuccess(
-          json['latitude'] as double,
-          json['longitude'] as double,
+          (json['latitude'] as num).toDouble(),
+          (json['longitude'] as num).toDouble(),
           json['geometry'] != null ? Geometry.fromJson(json['geometry']) : null,
         );
       }
