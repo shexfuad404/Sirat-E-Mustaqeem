@@ -1,5 +1,5 @@
 [app]
-# ناوی ئەپەکە بە کوردی
+# ناوی بەرنامەکە بە کوردی
 title = ڕێگای ڕاست
 package.name = regayrast
 package.domain = org.sirat.kurd
@@ -7,23 +7,24 @@ source.dir = .
 source.include_exts = py,png,jpg,kv,atlas
 version = 1.0
 
-# لۆگۆی ئەپەکە
-icon.filename = ic_launcher.svg
+# لۆگۆی بەرنامەکە (دڵنیابە فایلێک بەم ناوە لە گیتھەب هەبێت)
+icon.filename = logo.png
 
 orientation = portrait
 fullscreen = 0
 
-# کتێبخانەکان - وەشانی کیڤی دیاری کراوە بۆ جێگیری
+# پێداویستییەکان
 requirements = python3,kivy==2.2.1,pillow
 
-# ڕێکخستنی ئەندرۆید - وەشانی 25b بۆ دوورکەوتنەوە لە کێشە
-android.api = 33
+# ڕێکخستنی ئەندرۆید - وەشانی ٣١ جێگیرترە بۆ AIDL
+android.api = 31
 android.minapi = 21
+android.sdk = 31
+android.build_tools_version = 31.0.0
 android.ndk = 25b
-android.ndk_path = 
-android.sdk_path = 
+android.accept_sdk_license = True
 
-# مۆڵەتی ئینتەرنێت
+# مۆڵەتەکان
 android.permissions = INTERNET
 
 [buildozer]
