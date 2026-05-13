@@ -22,15 +22,16 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y build-essential git python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libgstreamer1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libgdbm-dev libgdbm-compat-dev liblzma-dev libreadline-dev libncursesw5-dev libffi-dev uuid-dev libtool autoconf automake
+          # لێرەدا تەنها ئەو کتێبخانانەمان داناوە کە زۆر پێویستن و کێشە دروست ناکەن
+          sudo apt install -y build-essential git python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-en-dev libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libgdbm-dev libgdbm-compat-dev liblzma-dev libreadline-dev libncursesw5-dev libffi-dev uuid-dev libtool autoconf automake
           pip install --upgrade pip
           pip install "cython<3.0.0" buildozer
 
       - name: Build with Buildozer
         run: |
-          # پاککردنەوەی ڕێڕەوی NDK بۆ ئەوەی وەشانی ناو سێرڤەر بەکارنەهێنێت
           export ANDROID_NDK_HOME=""
-          buildozer android debug
+          # بەکارهێنانی debug بۆ ئەوەی بزانین کێشەکە لە کوێیە
+          buildozer -v android debug
         env:
           ANDROID_NDK_HOME: ""
 
