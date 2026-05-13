@@ -22,7 +22,6 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt update
-          # لێرەدا تەنها ئەو کتێبخانانەمان داناوە کە زۆر پێویستن و کێشە دروست ناکەن
           sudo apt install -y build-essential git python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-en-dev libavformat-dev libavcodec-dev zlib1g-dev libsqlite3-dev sqlite3 bzip2 libbz2-dev libssl-dev openssl libgdbm-dev libgdbm-compat-dev liblzma-dev libreadline-dev libncursesw5-dev libffi-dev uuid-dev libtool autoconf automake
           pip install --upgrade pip
           pip install "cython<3.0.0" buildozer
@@ -30,7 +29,6 @@ jobs:
       - name: Build with Buildozer
         run: |
           export ANDROID_NDK_HOME=""
-          # بەکارهێنانی debug بۆ ئەوەی بزانین کێشەکە لە کوێیە
           buildozer -v android debug
         env:
           ANDROID_NDK_HOME: ""
